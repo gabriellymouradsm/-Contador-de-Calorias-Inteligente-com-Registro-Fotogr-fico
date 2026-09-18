@@ -17,93 +17,13 @@
 .manual-photo-form-card h3 { color: var(--primary, #ff6b00); font-size: 16px; margin-bottom: 12px; }
 .file-input-hidden { display: none; }
 
-/* calendario  */
-
-.spark-calendar-container {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 12px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  border: 1px solid #f0f0f0;
+/* Estilos de Impressão para o PDF */
+@media print {
+  body { background: white !important; color: black !important; }
+  .bottom-nav, .top-header, .btn, .icon-btn { display: none !important; }
+  .view-section { display: block !important; page-break-after: always; opacity: 1 !important; visibility: visible !important; }
+  .dashboard-card, .perfil-card, .medidas-history-card { border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 20px; }
 }
-
-.calendar-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 0 4px;
-}
-
-.calendar-month-title {
-  font-weight: 600;
-  font-size: 15px;
-  color: #333;
-}
-
-.cal-nav-btn {
-  background: none;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  color: #ff6600; /* Tom laranja do SparkKcal */
-  font-weight: bold;
-  padding: 4px 8px;
-}
-
-.calendar-days-row {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-  scrollbar-width: none; /* Esconde barra de rolagem no Firefox */
-}
-
-.calendar-days-row::-webkit-scrollbar {
-  display: none; /* Esconde barra de rolagem no Chrome/Safari */
-}
-
-.day-card {
-  flex: 0 0 45px;
-  height: 65px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  border-radius: 12px;
-  background: #f9f9f9;
-  border: 1px solid #eee;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.day-card .day-name {
-  font-size: 11px;
-  color: #888;
-  text-transform: lowercase;
-  margin-bottom: 2px;
-}
-
-.day-card .day-number {
-  font-size: 15px;
-  font-weight: bold;
-  color: #444;
-}
-
-/* Estilo do dia selecionado (inspirado na cor laranja do SparkKcal) */
-.day-card.selected {
-  background: #ff6600 !important;
-  border-color: #ff6600 !important;
-  color: #fff !important;
-  box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
-}
-
-.day-card.selected .day-name,
-.day-card.selected .day-number {
-  color: #fff;
-}
-
 </style>
 </head>
 <body class="light-theme">
@@ -248,23 +168,6 @@
 <p id="spark-message">Olá! Vamos manter o foco e atingir nossas metas hoje!</p>
 </div>
 </div>
-
-<!-- calendario-->
-    
-<div class="spark-calendar-container">
-  <!-- Cabeçalho com o mês/ano e botão de data rápida -->
-  <div class="calendar-header">
-    <button id="btn-prev-week" class="cal-nav-btn">&lt;</button>
-    <span id="mes-ano-atual" class="calendar-month-title">Setembro 2026</span>
-    <button id="btn-next-week" class="cal-nav-btn">&gt;</button>
-  </div>
-
-  <!-- Carrossel de dias da semana -->
-  <div class="calendar-days-row" id="calendar-days-row">
-    <!-- Os dias serão injetados dinamicamente via JavaScript -->
-  </div>
-</div>
-
 
 <div class="dashboard-card calories-summary-card">
 <div class="card-header-flex">
@@ -491,15 +394,15 @@
 
 <div class="form-row">
 <div class="form-group">
-<label for="photo-food-prot">Proteína</label>
+<label for="photo-food-prot">Proteína (g)</label>
 <input type="number" id="photo-food-prot" class="form-control" min="0" step="0.1" value="0">
 </div>
 <div class="form-group">
-<label for="photo-food-carb">Carboidrato</label>
+<label for="photo-food-carb">Carboidrato (g)</label>
 <input type="number" id="photo-food-carb" class="form-control" min="0" step="0.1" value="0">
 </div>
 <div class="form-group">
-<label for="photo-food-fat">Gordura</label>
+<label for="photo-food-fat">Gordura (g)</label>
 <input type="number" id="photo-food-fat" class="form-control" min="0" step="0.1" value="0">
 </div>
 </div>
@@ -694,7 +597,12 @@ Adicionar ao Diário Alimentar
 </div>
 </div>
 
-<button class="btn btn-secondary btn-block margin-top-md" id="btn-edit-profile">
+<!-- BOTÃO ADICIONADO PARA GERAR O RELATÓRIO EM PDF -->
+<button class="btn btn-primary btn-block margin-top-md" id="btn-gerar-pdf">
+📄 Gerar Relatório Completo em PDF
+</button>
+
+<button class="btn btn-secondary btn-block margin-top-sm" id="btn-edit-profile">
 ⚙️ Editar Dados do Perfil
 </button>
 
@@ -879,7 +787,6 @@ document.addEventListener('DOMContentLoaded', () => {
             uploadPlaceholder.style.display = 'none';
             previewContainer.style.display = 'block';
             
-            // Exibe o formulário manual para preenchimento dos dados do prato
             if (manualPhotoFormCard) manualPhotoFormCard.style.display = 'block';
         };
         reader.readAsDataURL(file);
@@ -939,82 +846,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (galleryInput) galleryInput.value = '';
     }
 });
-
-    
 </script>
 
-
-<!--Calendario-->
+<!-- SCRIPT DE GERAÇÃO DO PDF -->
 <script>
-    let dataAtualSelecionada = new Date();
+document.addEventListener('DOMContentLoaded', () => {
+    const btnGerarPdf = document.getElementById('btn-gerar-pdf');
+    if (btnGerarPdf) {
+        btnGerarPdf.addEventListener('click', () => {
+            // Torna todas as seções visíveis temporariamente para o print recolher todo o conteúdo no PDF
+            const secoes = document.querySelectorAll('.view-section');
+            secoes.forEach(sec => sec.style.display = 'block');
 
-function formatarDataISO(date) {
-  return date.toISOString().split('T')[0];
-}
+            // Aciona a ferramenta nativa de impressão/salvar como PDF do navegador
+            window.print();
 
-function renderizarCalendario(centroData) {
-  const container = document.getElementById('calendar-days-row');
-  container.innerHTML = '';
-
-  // Array com abreviações dos dias da semana em português
-  const diasSemana = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
-  
-  // Meses para o título
-  const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
-  
-  document.getElementById('mes-ano-atual').innerText = `${nomesMeses[centroData.getMonth()]} ${centroData.getFullYear()}`;
-
-  // Gera 7 dias centrados na data escolhida (3 dias antes, o dia atual, 3 dias depois)
-  for (let i = -3; i <= 3; i++) {
-    let d = new Date(centroData);
-    d.setDate(centroData.getDate() + i);
-
-    const card = document.createElement('div');
-    card.className = 'day-card';
-    
-    const isoString = formatarDataISO(d);
-    if (isoString === formatarDataISO(dataAtualSelecionada)) {
-      card.classList.add('selected');
+            // Restaura o comportamento normal de abas da aplicação após o fechamento da janela de impressão
+            setTimeout(() => {
+                secoes.forEach(sec => {
+                    if (!sec.classList.contains('active')) {
+                        sec.style.display = 'none';
+                    }
+                });
+            }, 500);
+        });
     }
-
-    card.innerHTML = `
-      <span class="day-name">${diasSemana[d.getDay()]}</span>
-      <span class="day-number">${d.getDate()}</span>
-    `;
-
-    // Ação ao clicar em um dia do carrossel
-    card.addEventListener('click', () => {
-      dataAtualSelecionada = new Date(d);
-      renderizarCalendario(dataAtualSelecionada);
-      
-      // Aqui você chama a função que carrega os dados do dia selecionado no seu app
-      if (typeof carregarDiarioDoDia === 'function') {
-        carregarDiarioDoDia(isoString);
-      }
-    });
-
-    container.appendChild(card);
-  }
-}
-
-// Botões de navegação lateral (opcional para avançar/recuar a semana)
-document.getElementById('btn-prev-week').addEventListener('click', () => {
-  dataAtualSelecionada.setDate(dataAtualSelecionada.getDate() - 7);
-  renderizarCalendario(dataAtualSelecionada);
 });
-
-document.getElementById('btn-next-week').addEventListener('click', () => {
-  dataAtualSelecionada.setDate(dataAtualSelecionada.getDate() + 7);
-  renderizarCalendario(dataAtualSelecionada);
-});
-
-// Inicializa o calendário ao carregar a página
-window.addEventListener('DOMContentLoaded', () => {
-  renderizarCalendario(dataAtualSelecionada);
-});
-
-
-    
 </script>
 </body>
 </html>
