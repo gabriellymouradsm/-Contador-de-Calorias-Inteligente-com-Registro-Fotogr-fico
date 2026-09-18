@@ -556,11 +556,12 @@ Adicionar ao Diário Alimentar
 <th>Peso</th>
 <th>Cintura</th>
 <th>% Gord.</th>
+<th>Ações</th>
 </tr>
 </thead>
 <tbody id="medidas-table-body">
 <tr>
-<td colspan="4" class="empty-table-msg">Nenhuma medição registrada.</td>
+<td colspan="5" class="empty-table-msg">Nenhuma medição registrada.</td>
 </tr>
 </tbody>
 </table>
@@ -597,7 +598,7 @@ Adicionar ao Diário Alimentar
 </div>
 </div>
 
-<!-- BOTÃO ADICIONADO PARA GERAR O RELATÓRIO EM PDF -->
+<!-- BOTÃO PARA GERAR O RELATÓRIO EM PDF -->
 <button class="btn btn-primary btn-block margin-top-md" id="btn-gerar-pdf">
 📄 Gerar Relatório Completo em PDF
 </button>
@@ -848,20 +849,126 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
+<!-- SCRIPT DE GERENCIAMENTO E EDIÇÃO DE MEDIDAS CORPORAIS -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const medidasForm = document.getElementById('medidas-form');
+    const medidasTableBody = document.getElementById('medidas-table-body');
+    let editandoIndice = null;
+
+    function carregarHistoricoMedidas() {
+        let historicoMedidas = JSON.parse(localStorage.getItem('sparkKcal_medidas')) || [];
+        medidasTableBody.innerHTML = '';
+
+        if (historicoMedidas.length === 0) {
+            medidasTableBody.innerHTML = `<tr><td colspan="5" class="empty-table-msg">Nenhuma medição registrada.</td></tr>`;
+            return;
+        }
+
+        historicoMedidas.forEach((item, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td>${item.data}</td>
+                <td>${item.peso} kg</td>
+                <td>${item.cintura ? item.cintura + ' cm' : '-'}</td>
+                <td>${item.gordura ? item.gordura + '%' : '-'}</td>
+                <td>
+                    <button class="btn-edit-medida" data-index="${index}" style="background: none; border: none; cursor: pointer; font-size: 16px;" title="Editar">✏️</button>
+                    <button class="btn-delete-medida" data-index="${index}" style="background: none; border: none; cursor: pointer; font-size: 16px;" title="Excluir">🗑️</button>
+                </td>
+            `;
+            medidasTableBody.appendChild(tr);
+        });
+
+        document.querySelectorAll('.btn-edit-medida').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.currentTarget.getAttribute('data-index');
+                preencherFormularioEdicao(index);
+            });
+        });
+
+        document.querySelectorAll('.btn-delete-medida').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const index = e.currentTarget.getAttribute('data-index');
+                excluirMedida(index);
+            });
+        });
+    }
+
+    if (medidasForm) {
+        medidasForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const peso = document.getElementById('medida-peso').value;
+            const gordura = document.getElementById('medida-gordura').value;
+            const cintura = document.getElementById('medida-cintura').value;
+            const quadril = document.getElementById('medida-quadril').value;
+            const braco = document.getElementById('medida-braco').value;
+            const dataHoje = new Date().toLocaleDateString('pt-BR');
+
+            let historicoMedidas = JSON.parse(localStorage.getItem('sparkKcal_medidas')) || [];
+
+            if (editandoIndice !== null) {
+                historicoMedidas[editandoIndice] = {
+                    ...historicoMedidas[editandoIndice],
+                    peso, gordura, cintura, quadril, braco
+                };
+                editandoIndice = null;
+                alert('Medição atualizada com sucesso!');
+            } else {
+                const novaMedicao = {
+                    data: dataHoje,
+                    peso, gordura, cintura, quadril, braco
+                };
+                historicoMedidas.unshift(novaMedicao);
+                alert('Medição salva com sucesso!');
+            }
+
+            localStorage.setItem('sparkKcal_medidas', JSON.stringify(historicoMedidas));
+            medidasForm.reset();
+            carregarHistoricoMedidas();
+        });
+    }
+
+    function preencherFormularioEdicao(index) {
+        let historicoMedidas = JSON.parse(localStorage.getItem('sparkKcal_medidas')) || [];
+        const item = historicoMedidas[index];
+        if (!item) return;
+
+        document.getElementById('medida-peso').value = item.peso || '';
+        document.getElementById('medida-gordura').value = item.gordura || '';
+        document.getElementById('medida-cintura').value = item.cintura || '';
+        document.getElementById('medida-quadril').value = item.quadril || '';
+        document.getElementById('medida-braco').value = item.braco || '';
+
+        editandoIndice = index;
+        medidasForm.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    function excluirMedida(index) {
+        if (confirm('Deseja realmente excluir esta medição?')) {
+            let historicoMedidas = JSON.parse(localStorage.getItem('sparkKcal_medidas')) || [];
+            historicoMedidas.splice(index, 1);
+            localStorage.setItem('sparkKcal_medidas', JSON.stringify(historicoMedidas));
+            carregarHistoricoMedidas();
+        }
+    }
+
+    carregarHistoricoMedidas();
+});
+</script>
+
 <!-- SCRIPT DE GERAÇÃO DO PDF -->
 <script>
 document.addEventListener('DOMContentLoaded', () => {
     const btnGerarPdf = document.getElementById('btn-gerar-pdf');
     if (btnGerarPdf) {
         btnGerarPdf.addEventListener('click', () => {
-            // Torna todas as seções visíveis temporariamente para o print recolher todo o conteúdo no PDF
             const secoes = document.querySelectorAll('.view-section');
             secoes.forEach(sec => sec.style.display = 'block');
 
-            // Aciona a ferramenta nativa de impressão/salvar como PDF do navegador
             window.print();
 
-            // Restaura o comportamento normal de abas da aplicação após o fechamento da janela de impressão
             setTimeout(() => {
                 secoes.forEach(sec => {
                     if (!sec.classList.contains('active')) {
