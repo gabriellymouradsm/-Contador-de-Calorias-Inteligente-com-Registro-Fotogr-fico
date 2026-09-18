@@ -1,0 +1,28 @@
+/* Base de dados de alimentos comuns da culinária brasileira */
+const alimentosComuns = [
+  { id: '1', nome: 'Arroz Branco Cozido', porcaoGrams: 100, kcal: 130, proteina: 2.7, carboidrato: 28, gordura: 0.3, categoria: 'Grãos' },
+  { id: '2', nome: 'Arroz Integral Cozido', porcaoGrams: 100, kcal: 124, proteina: 2.6, carboidrato: 25.8, gordura: 1, categoria: 'Grãos' },
+  { id: '3', nome: 'Feijão Carioca Cozido', porcaoGrams: 100, kcal: 76, proteina: 4.8, carboidrato: 13.6, gordura: 0.5, categoria: 'Leguminosas' },
+  { id: '4', nome: 'Feijão Preto Cozido', porcaoGrams: 100, kcal: 77, proteina: 4.5, carboidrato: 14, gordura: 0.5, categoria: 'Leguminosas' },
+  { id: '5', nome: 'Peito de Frango Grelhado', porcaoGrams: 100, kcal: 165, proteina: 31, carboidrato: 0, gordura: 3.6, categoria: 'Carnes' },
+  { id: '6', nome: 'Ovo de Galinha Cozido', porcaoGrams: 50, kcal: 77, proteina: 6.3, carboidrato: 0.6, gordura: 5.3, categoria: 'Ovos' },
+  { id: '7', nome: 'Ovo Frito', porcaoGrams: 50, kcal: 110, proteina: 6.5, carboidrato: 0.5, gordura: 9, categoria: 'Ovos' },
+  { id: '8', nome: 'Pão Francês', porcaoGrams: 50, kcal: 135, proteina: 4.5, carboidrato: 28.5, gordura: 1.5, categoria: 'Pães' },
+  { id: '9', nome: 'Pão Integral', porcaoGrams: 50, kcal: 120, proteina: 4, carboidrato: 22, gordura: 1.8, categoria: 'Pães' },
+  { id: '10', nome: 'Tapioca (Massa Pronta)', porcaoGrams: 50, kcal: 120, proteina: 0, carboidrato: 30, gordura: 0, categoria: 'Mandioca/Tapioca' },
+  { id: '11', nome: 'Banana Prata', porcaoGrams: 100, kcal: 89, proteina: 1.1, carboidrato: 22.8, gordura: 0.3, categoria: 'Frutas' },
+  { id: '12', nome: 'Maçã', porcaoGrams: 100, kcal: 52, proteina: 0.3, carboidrato: 13.8, gordura: 0.2, categoria: 'Frutas' },
+  { id: '13', nome: 'Mamão Papaia', porcaoGrams: 100, kcal: 43, proteina: 0.5, carboidrato: 10.8, gordura: 0.3, categoria: 'Frutas' },
+  { id: '14', nome: 'Leite Integral', porcaoGrams: 200, kcal: 120, proteina: 6.4, carboidrato: 9.6, gordura: 6.4, categoria: 'Laticínios' },
+  { id: '15', nome: 'Leite Desnatado', porcaoGrams: 200, kcal: 70, proteina: 6.8, carboidrato: 10, gordura: 0.4, categoria: 'Laticínios' },
+  { id: '16', nome: 'Queijo Mussarela', porcaoGrams: 30, kcal: 98, proteina: 6.8, carboidrato: 0.9, gordura: 7.6, categoria: 'Laticínios' },
+  { id: '17', nome: 'Queijo Minas Frescal', porcaoGrams: 30, kcal: 73, proteina: 5.2, carboidrato: 1, gordura: 5.4, categoria: 'Laticínios' },
+  { id: '18', nome: 'Carne Moída (Atem) Refogada', porcaoGrams: 100, kcal: 212, proteina: 26.7, carboidrato: 0, gordura: 11, categoria: 'Carnes' },
+  { id: '19', nome: 'Bife de Patinho Grelhado', porcaoGrams: 100, kcal: 219, proteina: 35.9, carboidrato: 0, gordura: 7.3, categoria: 'Carnes' },
+  { id: '20', nome: 'Batata Doce Cozida', porcaoGrams: 100, kcal: 86, proteina: 1.6, carboidrato: 20.1, gordura: 0.1, categoria: 'Tubérculos' },
+  { id: '21', nome: 'Mandioca Cozida', porcaoGrams: 100, kcal: 125, proteina: 0.6, carboidrato: 30, gordura: 0.3, categoria: 'Tubérculos' },
+  { id: '22', nome: 'Salada de Alface e Tomate', porcaoGrams: 100, kcal: 18, proteina: 1.1, carboidrato: 3.5, gordura: 0.2, categoria: 'Verduras' },
+  { id: '23', nome: 'Azeite de Oliva', porcaoGrams: 10, kcal: 88, proteina: 0, carboidrato: 0, gordura: 10, categoria: 'Óleos' },
+  { id: '24', nome: 'Whey Protein (Dose)', porcaoGrams: 30, kcal: 120, proteina: 24, carboidrato: 2, gordura: 1.5, categoria: 'Suplementos' },
+  { id: '25', nome: 'Café Preto sem Açúcar', porcaoGrams: 100, kcal: 2, proteina: 0.2, carboidrato: 0.3, gordura: 0, categoria: 'Bebidas' }
+];

@@ -1,0 +1,22 @@
+{
+  "name": "SparkKcal — Contador de Calorias & Hábitos",
+  "short_name": "SparkKcal",
+  "description": "Contador de calorias inteligente, registro fotográfico e monitoramento de hábitos offline.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#121417",
+  "theme_color": "#ff6b00",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ff6b00'/><path fill='%23ffffff' d='M50 15 C50 15 70 35 70 60 C70 75 60 85 50 85 C40 85 30 75 30 60 C30 35 50 15 50 15 Z'/></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><circle cx='50' cy='50' r='50' fill='%23ff6b00'/><path fill='%23ffffff' d='M50 15 C50 15 70 35 70 60 C70 75 60 85 50 85 C40 85 30 75 30 60 C30 35 50 15 50 15 Z'/></svg>",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
