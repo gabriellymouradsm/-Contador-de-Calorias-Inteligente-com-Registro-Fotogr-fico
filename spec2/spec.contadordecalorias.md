@@ -1,38 +1,49 @@
-﻿
-
-
-# Contador de Calorias Inteligente com Registro Fotográfico
+## SPA de Contagem de Calorias e Hábitos — SparkKcal
 
 # Contexto
 
-Criar uma **aplicação SPA (Single Page Application)** para entusiastas de vida saudável e pacientes em reeducação alimentar registrarem o consumo diário de calorias de forma extremamente rápida, permitindo capturar fotos dos pratos diretamente pelo celular no momento da refeição.
+Aplicação SPA (Single Page Application) desenvolvida em HTML5, CSS3 e JavaScript puro (Vanilla JS), sem pacotes ou dependências complexas (com exceção opcional da biblioteca Chart.js via CDN para renderização dos gráficos). Hospedada de forma totalmente gratuita no GitHub Pages, com suporte a PWA (Progressive Web App) para ser instalada diretamente na tela inicial do celular como um aplicativo nativo.
 
-# Requisitos
+# UI e UX (Interface e Experiência do Usuário)
+ -  Identidade Visual e Paleta de Cores: Estética moderna, limpa e energética, utilizando tons inspirados no mascote Spark. Fundo off-white limpo (#f8f9fa) no modo claro ou fundo escuro sofisticado (#121417) para modo noturno, com acentos em laranja vibrante (#ff6b00), amarelo energia (#ffca28) e verde sucesso (#2e7d32) para metas batidas.
+- Tipografia: Fontes limpas e altamente legíveis (como Inter ou Poppins) para garantir clareza nos números de calorias, metas e listagens rápidas.
+ -  Arquitetura de Navegação (Mobile-First): Layout responsivo projetado primariamente para uso em smartphones. Utiliza uma barra de navegação inferior (Bottom Navigation Bar) fixa para transição fluida entre o Dashboard, Diário, Gráficos e Perfil.
+- Micro-interações e Feedback Visual: Animações fluidas CSS e estados reativos do mascote Spark (neutro, focado e comemorando) para recompensar o usuário instantaneamente ao registrar uma refeição ou bater a meta de água, gerando engajamento e gamificação leve.
+ -  Acessibilidade e Ergonomia: Botões de toque com tamanho adequado para dispositivos móveis (mínimo de 48x48px), contraste validado para leitura sob luz solar e suporte a inputs numéricos otimizados para teclados móveis.
+Módulos e Recursos do APP
 
-1.  **Gerenciamento de Refeições:** O usuário pode visualizar, adicionar, marcar como consumida e excluir registros alimentares do dia (ex: 08:00 - Café da Manhã - 350 kcal).
-2.  **Captura de Imagem via Câmera:** Integração com a câmera do dispositivo móvel para tirar fotos dos pratos em tempo real ou fazer o upload da galeria, exibindo uma miniatura visual ao lado de cada refeição.
-3.  **Contador e Meta Diária:** Exibir em tempo real uma barra de progresso e um contador numérico mostrando o total de calorias consumidas versus a meta diária estipulada pelo usuário.
+# Tela Inicial de Configuração / Boas-Vindas (index.html)
+- Coleta de Dados Iniciais: Nome do usuário, idade, peso atual, altura, nível de atividade física e objetivo principal (emagrecer, manter ou ganhar massa).
+ -  Definição de Metas: Cálculo automático da taxa metabólica basal e estimativa da meta diária de calorias e de água.
+   - Persistência Local: Todos os dados inseridos e as metas calculadas são salvos de forma persistente no localStorage.
+ -  Acesso Direto: Botão de avançar que redireciona o usuário para o painel principal (Dashboard).
+Painel de Controle Principal & Mascote (dashboard.html)
+- Mascote Interativo (Spark): Uma chaminha animada em destaque na tela que reage em tempo real às ações do usuário. Possui estados visuais (neutro, focado e feliz/comemorando) controlados via JavaScript e CSS.
+ -  Resumo Diário: Exibição imediata das calorias consumidas versus a meta diária, acompanhadas de barras de progresso dinâmicas.
+- Ações Rápidas: Botões flutuantes para adicionar refeições rapidamente ou registrar água com um clique.
 
-# Recursos Adicionais
+# Diário Alimentar & Busca Inteligente (diario.html)
+ -  Divisão Cronológica: Registro de refeições organizado por blocos (Café da Manhã, Almoço, Jantar e Lanches).
+- Busca Inteligente & Recentes: Campo de busca instantânea e histórico dos alimentos mais consumidos para agilizar o preenchimento.
+ -  Modo de Edição / Exclusão: Habilita a remoção ou ajuste de itens individuais na lista diária, atualizando os totais de calorias e macronutrientes automaticamente.
 
-1.  **Ajuste Rápido de Porções:** Botões rápidos para multiplicar ou fracionar o tamanho do prato registrado (0.5x meia porção, 1.5x porção grande, 2x porção dupla). Ao acionar, o sistema recalcula de forma automática e instantânea o valor calórico daquela refeição e atualiza o total do dia.
-2.  **Filtros de Período Dinâmicos:** Permitir alternar a visualização do diário alimentar entre os períodos do dia: "Ver Todas", "Café da Manhã", "Almoço", "Jantar" e "Lanches".
+# Upload de Fotos de Pratos & IA Simulada (fotos.html)
+ -  Registro Visual: Área para o usuário carregar fotos de suas refeições direto da câmera ou galeria do celular (processadas localmente via FileReader e salvas no localStorage).
+- Análise Visual: Interface simulada de reconhecimento para estimar visualmente o prato e integrar ao diário alimentar.
 
-# Stack
+# Gráficos de Consumo e Tendências (graficos.html)
+ -  Análise Temporal: Utiliza a biblioteca Chart.js para exibir gráficos de linha ou rosca com o histórico do consumo calórico diário e a divisão de macronutrientes (Proteínas, Carboidratos e Gorduras).
 
--   **HTML5 (com API de Câmera/Media Capture), CSS3 e JavaScript Puro (Vanilla)**
--   **Tailwind CSS** (via CDN oficial) para acelerar a estilização e reduzir código CSS customizado.
--   **Hospedagem:** Preparado para publicação direta e gratuita no **GitHub Pages**.
+# Rastreador de Hidratação / Água (agua.html)
+- Controle de Copos: Sistema interativo com ícones de copos para adicionar ou remover o consumo de água do dia.
+ -  Barra de Progresso: Indicador visual em tempo real comparando a água ingerida com a meta diária estipulada.
 
-# UI/UX
+# Monitoramento de Peso e Medidas (medidas.html)
+- Evolução Corporal: Formulário para registrar o peso atual, circunferências (cintura, quadril, braços) e percentual de gordura.
+ -  Histórico Salvo: Tabela ou lista com as últimas medições para acompanhar o progresso ao longo das semanas, mantendo tudo salvo localmente.
 
--   **Mobile First:** Interface totalmente otimizada para smartphones, visto que o usuário registrará a alimentação no momento exato do consumo através do celular.
--   **Estética Clean/Fitness:** Uso de paleta de cores moderna, limpa e convidativa (tons de verde saúde, brancos e cinzas claros texturizados) com tipografia sans-serif de alta legibilidade.
--   **Micro-interações:** Transições suaves ao abrir a câmera nativa, animações de fade ao adicionar novos pratos e atualização fluida e animada do círculo ou barra de progresso calórico.
-
-# Instruções para Agentes de IA
-
-1.  Analise sempre a viabilidade do desenvolvimento.
-2.  Não havendo viabilidade, não execute a tarefa e solicite interação humana.
-3.  Todo ajuste, correção ou incrementação deve ser registrado em um arquivo de backlog. Salve o arquivo em `/spec/backlog.md` registrando a data, a hora e a tarefa executada.
-
+# O que o app NÃO deve fazer
+ -  Enviar dados para servidores externos ou banco de dados em nuvem (toda a persistência e manipulação de dados ocorrem estritamente no navegador via localStorage / IndexedDB).
+- Exigir cadastros complexos, senhas ou criação de contas em servidores de backend.
+ -  Travar a navegação caso o armazenamento local atinja limites (o upload de fotos possui redimensionamento básico ou tratamento para evitar estouro de cota do navegador).
+ * Realizar diagnósticos médicos profissionais (o app atua exclusivamente como ferramenta de acompanhamento e autogestão de hábitos).
