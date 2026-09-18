@@ -16,6 +16,94 @@
 .manual-photo-form-card { background: var(--card-bg, #fff); border: 2px solid var(--border-color, #dee2e6); border-radius: 12px; padding: 16px; margin-top: 20px; display: none; }
 .manual-photo-form-card h3 { color: var(--primary, #ff6b00); font-size: 16px; margin-bottom: 12px; }
 .file-input-hidden { display: none; }
+
+/* calendario  */
+
+.spark-calendar-container {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+}
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 0 4px;
+}
+
+.calendar-month-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #333;
+}
+
+.cal-nav-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #ff6600; /* Tom laranja do SparkKcal */
+  font-weight: bold;
+  padding: 4px 8px;
+}
+
+.calendar-days-row {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none; /* Esconde barra de rolagem no Firefox */
+}
+
+.calendar-days-row::-webkit-scrollbar {
+  display: none; /* Esconde barra de rolagem no Chrome/Safari */
+}
+
+.day-card {
+  flex: 0 0 45px;
+  height: 65px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: #f9f9f9;
+  border: 1px solid #eee;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.day-card .day-name {
+  font-size: 11px;
+  color: #888;
+  text-transform: lowercase;
+  margin-bottom: 2px;
+}
+
+.day-card .day-number {
+  font-size: 15px;
+  font-weight: bold;
+  color: #444;
+}
+
+/* Estilo do dia selecionado (inspirado na cor laranja do SparkKcal) */
+.day-card.selected {
+  background: #ff6600 !important;
+  border-color: #ff6600 !important;
+  color: #fff !important;
+  box-shadow: 0 4px 10px rgba(255, 102, 0, 0.3);
+}
+
+.day-card.selected .day-name,
+.day-card.selected .day-number {
+  color: #fff;
+}
+
 </style>
 </head>
 <body class="light-theme">
@@ -160,6 +248,23 @@
 <p id="spark-message">Olá! Vamos manter o foco e atingir nossas metas hoje!</p>
 </div>
 </div>
+
+<!-- calendario-->
+    
+<div class="spark-calendar-container">
+  <!-- Cabeçalho com o mês/ano e botão de data rápida -->
+  <div class="calendar-header">
+    <button id="btn-prev-week" class="cal-nav-btn">&lt;</button>
+    <span id="mes-ano-atual" class="calendar-month-title">Setembro 2026</span>
+    <button id="btn-next-week" class="cal-nav-btn">&gt;</button>
+  </div>
+
+  <!-- Carrossel de dias da semana -->
+  <div class="calendar-days-row" id="calendar-days-row">
+    <!-- Os dias serão injetados dinamicamente via JavaScript -->
+  </div>
+</div>
+
 
 <div class="dashboard-card calories-summary-card">
 <div class="card-header-flex">
@@ -834,7 +939,82 @@ document.addEventListener('DOMContentLoaded', () => {
         if (galleryInput) galleryInput.value = '';
     }
 });
+
+    
 </script>
 
+
+<!--Calendario-->
+<script>
+    let dataAtualSelecionada = new Date();
+
+function formatarDataISO(date) {
+  return date.toISOString().split('T')[0];
+}
+
+function renderizarCalendario(centroData) {
+  const container = document.getElementById('calendar-days-row');
+  container.innerHTML = '';
+
+  // Array com abreviações dos dias da semana em português
+  const diasSemana = ['dom', 'seg', 'ter', 'qua', 'qui', 'sex', 'sáb'];
+  
+  // Meses para o título
+  const nomesMeses = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  
+  document.getElementById('mes-ano-atual').innerText = `${nomesMeses[centroData.getMonth()]} ${centroData.getFullYear()}`;
+
+  // Gera 7 dias centrados na data escolhida (3 dias antes, o dia atual, 3 dias depois)
+  for (let i = -3; i <= 3; i++) {
+    let d = new Date(centroData);
+    d.setDate(centroData.getDate() + i);
+
+    const card = document.createElement('div');
+    card.className = 'day-card';
+    
+    const isoString = formatarDataISO(d);
+    if (isoString === formatarDataISO(dataAtualSelecionada)) {
+      card.classList.add('selected');
+    }
+
+    card.innerHTML = `
+      <span class="day-name">${diasSemana[d.getDay()]}</span>
+      <span class="day-number">${d.getDate()}</span>
+    `;
+
+    // Ação ao clicar em um dia do carrossel
+    card.addEventListener('click', () => {
+      dataAtualSelecionada = new Date(d);
+      renderizarCalendario(dataAtualSelecionada);
+      
+      // Aqui você chama a função que carrega os dados do dia selecionado no seu app
+      if (typeof carregarDiarioDoDia === 'function') {
+        carregarDiarioDoDia(isoString);
+      }
+    });
+
+    container.appendChild(card);
+  }
+}
+
+// Botões de navegação lateral (opcional para avançar/recuar a semana)
+document.getElementById('btn-prev-week').addEventListener('click', () => {
+  dataAtualSelecionada.setDate(dataAtualSelecionada.getDate() - 7);
+  renderizarCalendario(dataAtualSelecionada);
+});
+
+document.getElementById('btn-next-week').addEventListener('click', () => {
+  dataAtualSelecionada.setDate(dataAtualSelecionada.getDate() + 7);
+  renderizarCalendario(dataAtualSelecionada);
+});
+
+// Inicializa o calendário ao carregar a página
+window.addEventListener('DOMContentLoaded', () => {
+  renderizarCalendario(dataAtualSelecionada);
+});
+
+
+    
+</script>
 </body>
 </html>
