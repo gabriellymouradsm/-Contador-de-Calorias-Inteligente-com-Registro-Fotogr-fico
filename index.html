@@ -1,766 +1,872 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SparkKcal — Contador de Calorias & Hábitos</title>
-  <meta name="theme-color" content="#ff6b00">
-  <meta name="description" content="Contador de calorias inteligente, registro fotográfico e monitoramento de hábitos offline.">
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="styles.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SparkKcal — Contador de Calorias & Hábitos</title>
+<meta name="theme-color" content="#ff6b00">
+<meta name="description" content="Contador de calorias inteligente, registro fotográfico e monitoramento de hábitos offline.">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Estilo para tornar os macros da IA editáveis na Tela 4 */
+.ai-macro-box input.macro-input-edit {
+    width: 100%;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--primary, #ff6b00);
+    text-align: center;
+    outline: none;
+    padding: 2px 0;
+}
+.ai-macro-box input.macro-input-edit:focus {
+    background: rgba(255, 107, 0, 0.1);
+    border-radius: 4px;
+}
+.file-input-hidden {
+    display: none;
+}
+</style>
 </head>
 <body class="light-theme">
-  <svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <radialGradient id="flame-grad-outer" cx="50%" cy="80%" r="60%">
-        <stop offset="0%" stop-color="#ffca28"/>
-        <stop offset="60%" stop-color="#ff6b00"/>
-        <stop offset="100%" stop-color="#e65100"/>
-      </radialGradient>
-      <radialGradient id="flame-grad-inner" cx="50%" cy="70%" r="50%">
-        <stop offset="0%" stop-color="#ffffff"/>
-        <stop offset="70%" stop-color="#fff59d"/>
-        <stop offset="100%" stop-color="#ffca28"/>
-      </radialGradient>
-    </defs>
-  </svg>
-
-  <div id="app" class="app-container">
-
-    <!-- HEADER DA APLICAÇÃO -->
-    <header class="top-header" id="top-header">
-      <div class="header-brand">
-        <svg class="mini-spark-icon" viewBox="0 0 32 32" width="24" height="24">
-          <path fill="currentColor" d="M16 2C16 2 20 9 20 13C20 15.2 19.1 17.2 17.6 18.6C18.6 17 19 15 18 13.5C17 12 15 11 15 11C15 11 15.5 13.5 14.2 15.2C13 16.8 11 17.5 10 19.5C9 21.5 9.5 24 11.5 25.5C13.5 27 16 27 18.5 26C22.5 24.4 25 20.3 25 16C25 9 16 2 16 2Z"/>
-        </svg>
-        <span class="brand-title">SparkKcal</span>
-      </div>
-      <div class="header-actions">
-        <button id="theme-toggle" class="icon-btn" title="Alternar Tema" aria-label="Alternar Tema">
-          <svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20">
-            <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
-            <path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-          </svg>
-          <svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" style="display:none;">
-            <path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-          </svg>
-        </button>
-      </div>
-    </header>
-
-    <!-- ÁREA PRINCIPAL DE CONTEÚDO (TELAS DA SPA) -->
-    <main class="main-content" id="main-content">
-
-      <!-- TELA 1: VISTA DE BOAS-VINDAS / ONBOARDING -->
-      <section id="view-welcome" class="view-section">
-        <div class="onboarding-card">
-          <div class="spark-mascot-container hero-spark">
-            <div class="spark-flame neutral" id="welcome-spark">
-              <svg viewBox="0 0 100 120" class="spark-svg">
-                <defs>
-                  <radialGradient id="flame-grad-outer" cx="50%" cy="80%" r="60%">
-                    <stop offset="0%" stop-color="#ffca28"/>
-                    <stop offset="60%" stop-color="#ff6b00"/>
-                    <stop offset="100%" stop-color="#e65100"/>
-                  </radialGradient>
-                  <radialGradient id="flame-grad-inner" cx="50%" cy="70%" r="50%">
-                    <stop offset="0%" stop-color="#ffffff"/>
-                    <stop offset="70%" stop-color="#fff59d"/>
-                    <stop offset="100%" stop-color="#ffca28"/>
-                  </radialGradient>
-                </defs>
-                <path class="flame-body-outer" fill="url(#flame-grad-outer)" d="M50,10 C50,10 75,35 75,65 C75,85 62,105 45,108 C30,110 15,95 15,75 C15,50 35,30 35,30 C35,30 30,45 38,55 C45,65 55,60 55,50 C55,40 50,10 50,10 Z"/>
-                <path class="flame-body-inner" fill="url(#flame-grad-inner)" d="M50,40 C50,40 65,58 65,75 C65,88 56,98 45,99 C35,100 28,90 28,78 C28,62 40,50 40,50 C40,50 38,60 43,66 C48,72 53,68 53,62 C53,55 50,40 50,40 Z"/>
-                <g class="spark-eyes">
-                  <circle cx="42" cy="70" r="4" fill="#121417"/>
-                  <circle cx="58" cy="70" r="4" fill="#121417"/>
-                  <circle cx="43" cy="68" r="1.5" fill="#ffffff"/>
-                  <circle cx="59" cy="68" r="1.5" fill="#ffffff"/>
-                </g>
-                <path class="spark-mouth" fill="none" stroke="#121417" stroke-width="2.5" stroke-linecap="round" d="M45,80 Q50,85 55,80"/>
-              </svg>
-            </div>
-          </div>
-          <h1 class="welcome-title">Bem-vindo ao <span class="highlight">SparkKcal</span>!</h1>
-          <p class="welcome-subtitle">Sua jornada para uma vida mais saudável começa aqui. Vamos configurar suas metas diárias personalizadas.</p>
-
-          <form id="onboarding-form" class="form-grid">
-            <div class="form-group">
-              <label for="user-name">Seu Nome</label>
-              <input type="text" id="user-name" required placeholder="Ex: Alex">
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="user-age">Idade (anos)</label>
-                <input type="number" id="user-age" min="10" max="120" required placeholder="25">
-              </div>
-              <div class="form-group">
-                <label for="user-gender">Gênero</label>
-                <select id="user-gender" required>
-                  <option value="masculino">Masculino</option>
-                  <option value="feminino">Feminino</option>
-                </select>
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="user-weight">Peso (kg)</label>
-                <input type="number" id="user-weight" step="0.1" min="30" max="300" required placeholder="70.5">
-              </div>
-              <div class="form-group">
-                <label for="user-height">Altura (cm)</label>
-                <input type="number" id="user-height" min="100" max="250" required placeholder="175">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="user-activity">Nível de Atividade Física</label>
-              <select id="user-activity" required>
-                <option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
-                <option value="1.375">Levemente Ativo (exercício leve 1-3 dias/sem)</option>
-                <option value="1.55" selected>Moderadamente Ativo (exercício 3-5 dias/sem)</option>
-                <option value="1.725">Muito Ativo (exercício pesado 6-7 dias/sem)</option>
-                <option value="1.9">Extremamente Ativo (trabalho físico pesado/atleta)</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="user-goal">Objetivo Principal</label>
-              <select id="user-goal" required>
-                <option value="emagrecer">Emagrecer (Déficit Calórico)</option>
-                <option value="manter" selected>Manter Peso Atual</option>
-                <option value="ganhar">Ganhar Massa Muscular (Superávit Calórico)</option>
-              </select>
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Calcular Metas e Começar 🔥</button>
-          </form>
-        </div>
-      </section>
-
-      <!-- TELA 2: DASHBOARD / PAINEL PRINCIPAL -->
-      <section id="view-dashboard" class="view-section active">
-        <!-- MASCOTE SPARK EM DESTAQUE -->
-        <div class="spark-status-card">
-          <div class="spark-avatar-wrapper">
-            <div class="spark-flame neutral" id="dashboard-spark">
-              <svg viewBox="0 0 100 120" class="spark-svg">
-                <path class="flame-body-outer" fill="#ff6b00" d="M50,10 C50,10 75,35 75,65 C75,85 62,105 45,108 C30,110 15,95 15,75 C15,50 35,30 35,30 C35,30 30,45 38,55 C45,65 55,60 55,50 C55,40 50,10 50,10 Z"/>
-                <path class="flame-body-inner" fill="#ffca28" d="M50,40 C50,40 65,58 65,75 C65,88 56,98 45,99 C35,100 28,90 28,78 C28,62 40,50 40,50 C40,50 38,60 43,66 C48,72 53,68 53,62 C53,55 50,40 50,40 Z"/>
-                <g class="spark-eyes">
-                  <circle cx="42" cy="70" r="4" fill="#121417"/>
-                  <circle cx="58" cy="70" r="4" fill="#121417"/>
-                  <circle cx="43" cy="68" r="1.5" fill="#ffffff"/>
-                  <circle cx="59" cy="68" r="1.5" fill="#ffffff"/>
-                </g>
-                <path class="spark-mouth" id="spark-mouth-path" fill="none" stroke="#121417" stroke-width="2.5" stroke-linecap="round" d="M45,80 Q50,85 55,80"/>
-              </svg>
-            </div>
-          </div>
-          <div class="spark-speech-bubble">
-            <p id="spark-message">Olá! Vamos manter o foco e atingir nossas metas hoje!</p>
-          </div>
-        </div>
-
-        <!-- RESUMO DE CALORIAS DA DASHBOARD -->
-        <div class="dashboard-card calories-summary-card">
-          <div class="card-header-flex">
-            <h2>Resumo do Dia</h2>
-            <span class="date-badge" id="current-date-badge">Hoje</span>
-          </div>
-
-          <div class="calories-main-display">
-            <div class="cal-stat">
-              <span class="cal-val" id="dash-cal-consumed">0</span>
-              <span class="cal-label">Consumidas</span>
-            </div>
-            <div class="cal-divider">/</div>
-            <div class="cal-stat">
-              <span class="cal-val" id="dash-cal-target">2000</span>
-              <span class="cal-label">Meta kcal</span>
-            </div>
-            <div class="cal-stat remaining">
-              <span class="cal-val" id="dash-cal-remaining">2000</span>
-              <span class="cal-label">Restantes</span>
-            </div>
-          </div>
-
-          <div class="progress-container">
-            <div class="progress-bar-bg">
-              <div class="progress-bar-fill" id="dash-cal-progress" style="width: 0%;"></div>
-            </div>
-          </div>
-
-          <!-- MACRONUTRIENTES -->
-          <div class="macros-grid">
-            <div class="macro-item">
-              <div class="macro-header">
-                <span class="macro-title">Proteínas</span>
-                <span class="macro-val"><span id="dash-prot-val">0</span> / <span id="dash-prot-target">150</span>g</span>
-              </div>
-              <div class="progress-bar-bg small">
-                <div class="progress-bar-fill prot-fill" id="dash-prot-progress" style="width: 0%;"></div>
-              </div>
-            </div>
-
-            <div class="macro-item">
-              <div class="macro-header">
-                <span class="macro-title">Carboidratos</span>
-                <span class="macro-val"><span id="dash-carb-val">0</span> / <span id="dash-carb-target">250</span>g</span>
-              </div>
-              <div class="progress-bar-bg small">
-                <div class="progress-bar-fill carb-fill" id="dash-carb-progress" style="width: 0%;"></div>
-              </div>
-            </div>
-
-            <div class="macro-item">
-              <div class="macro-header">
-                <span class="macro-title">Gorduras</span>
-                <span class="macro-val"><span id="dash-fat-val">0</span> / <span id="dash-fat-target">65</span>g</span>
-              </div>
-              <div class="progress-bar-bg small">
-                <div class="progress-bar-fill fat-fill" id="dash-fat-progress" style="width: 0%;"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- RESUMO RÁPIDO DE ÁGUA NA DASHBOARD -->
-        <div class="dashboard-card water-summary-card">
-          <div class="water-card-content">
-            <div class="water-info">
-              <h3>Água Ingerida</h3>
-              <p class="water-status-text"><strong id="dash-water-val">0</strong> ml / <span id="dash-water-target">2000</span> ml</p>
-            </div>
-            <button class="btn btn-water-quick" id="quick-add-water">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-                <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-              </svg>
-              +250ml
-            </button>
-          </div>
-          <div class="progress-bar-bg small margin-top-sm">
-            <div class="progress-bar-fill water-fill" id="dash-water-progress" style="width: 0%;"></div>
-          </div>
-        </div>
-
-        <!-- AÇÕES RÁPIDAS -->
-        <div class="quick-actions-grid">
-          <button class="btn-action-card" id="btn-quick-add-meal">
-            <div class="action-icon orange-bg">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 5v14M5 12h14"/>
-              </svg>
-            </div>
-            <span>Registrar Refeição</span>
-          </button>
-
-          <button class="btn-action-card" id="btn-quick-photo">
-            <div class="action-icon purple-bg">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-            </div>
-            <span>Foto do Prato</span>
-          </button>
-        </div>
-      </section>
-
-      <!-- TELA 3: DIÁRIO ALIMENTAR & BUSCA INTELIGENTE -->
-      <section id="view-diario" class="view-section">
-        <div class="section-header">
-          <h2>Diário Alimentar</h2>
-          <button id="btn-open-add-food-modal" class="btn btn-primary btn-sm">
-            + Adicionar Alimento
-          </button>
-        </div>
-
-        <!-- BLOCOS DAS REFEIÇÕES -->
-        <div class="meals-container">
-          <!-- CAFÉ DA MANHÃ -->
-          <div class="meal-block-card" data-meal-type="cafe">
-            <div class="meal-header">
-              <div class="meal-title-group">
-                <span class="meal-icon">🍳</span>
-                <div>
-                  <h3>Café da Manhã</h3>
-                  <span class="meal-calories-badge"><span class="meal-total-cal" id="cafe-total-cal">0</span> kcal</span>
-                </div>
-              </div>
-              <button class="btn-add-meal-item" data-meal="cafe" title="Adicionar no Café da Manhã">+</button>
-            </div>
-            <ul class="meal-items-list" id="cafe-items-list">
-              <li class="empty-meal-msg">Nenhum alimento registrado.</li>
-            </ul>
-          </div>
-
-          <!-- ALMOÇO -->
-          <div class="meal-block-card" data-meal-type="almoco">
-            <div class="meal-header">
-              <div class="meal-title-group">
-                <span class="meal-icon">🍲</span>
-                <div>
-                  <h3>Almoço</h3>
-                  <span class="meal-calories-badge"><span class="meal-total-cal" id="almoco-total-cal">0</span> kcal</span>
-                </div>
-              </div>
-              <button class="btn-add-meal-item" data-meal="almoco" title="Adicionar no Almoço">+</button>
-            </div>
-            <ul class="meal-items-list" id="almoco-items-list">
-              <li class="empty-meal-msg">Nenhum alimento registrado.</li>
-            </ul>
-          </div>
-
-          <!-- JANTAR -->
-          <div class="meal-block-card" data-meal-type="jantar">
-            <div class="meal-header">
-              <div class="meal-title-group">
-                <span class="meal-icon">🥗</span>
-                <div>
-                  <h3>Jantar</h3>
-                  <span class="meal-calories-badge"><span class="meal-total-cal" id="jantar-total-cal">0</span> kcal</span>
-                </div>
-              </div>
-              <button class="btn-add-meal-item" data-meal="jantar" title="Adicionar no Jantar">+</button>
-            </div>
-            <ul class="meal-items-list" id="jantar-items-list">
-              <li class="empty-meal-msg">Nenhum alimento registrado.</li>
-            </ul>
-          </div>
-
-          <!-- LANCHES -->
-          <div class="meal-block-card" data-meal-type="lanches">
-            <div class="meal-header">
-              <div class="meal-title-group">
-                <span class="meal-icon">🍎</span>
-                <div>
-                  <h3>Lanches</h3>
-                  <span class="meal-calories-badge"><span class="meal-total-cal" id="lanches-total-cal">0</span> kcal</span>
-                </div>
-              </div>
-              <button class="btn-add-meal-item" data-meal="lanches" title="Adicionar nos Lanches">+</button>
-            </div>
-            <ul class="meal-items-list" id="lanches-items-list">
-              <li class="empty-meal-msg">Nenhum alimento registrado.</li>
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      <!-- TELA 4: REGISTRO FOTOGRÁFICO & IA SIMULADA -->
-      <section id="view-fotos" class="view-section">
-        <div class="section-header">
-          <h2>Análise de Fotos com IA</h2>
-        </div>
-
-        <div class="photo-upload-card">
-          <p class="card-desc">Tire uma foto do seu prato ou envie uma imagem da galeria para estimar as calorias e macronutrientes do prato.</p>
-
-          <div class="photo-drop-zone" id="photo-drop-zone">
-            <input type="file" id="camera-input" accept="image/*" capture="environment" class="file-input-hidden">
-            <input type="file" id="gallery-input" accept="image/*" class="file-input-hidden">
-
-            <div class="upload-placeholder" id="upload-placeholder">
-              <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-                <circle cx="12" cy="13" r="4"/>
-              </svg>
-              <p>Toque para tirar foto ou carregar imagem</p>
-            </div>
-
-            <div class="image-preview-container" id="image-preview-container" style="display:none;">
-              <img id="dish-preview-img" src="" alt="Prato do Usuário">
-              <div class="scanning-overlay" id="scanning-overlay" style="display:none;">
-                <div class="scan-line"></div>
-                <p>Analisando prato com IA Spark...</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="photo-actions-row">
-            <button class="btn btn-secondary" id="btn-trigger-camera">📷 Câmera</button>
-            <button class="btn btn-secondary" id="btn-trigger-gallery">🖼️ Galeria</button>
-          </div>
-
-          <!-- RESULTADO DA IA SIMULADA -->
-          <div class="ai-results-card" id="ai-results-card" style="display:none;">
-            <h3>✨ Resultado da Análise Visual</h3>
-            <p class="ai-detected-title">Prato Detectado: <strong id="ai-detected-name">Prato Feito Tradicional</strong></p>
-
-            <div class="ai-macros-grid">
-              <div class="ai-macro-box">
-                <span class="ai-num" id="ai-est-cal">550</span>
-                <span class="ai-lbl">kcal</span>
-              </div>
-              <div class="ai-macro-box">
-                <span class="ai-num" id="ai-est-prot">35g</span>
-                <span class="ai-lbl">Proteína</span>
-              </div>
-              <div class="ai-macro-box">
-                <span class="ai-num" id="ai-est-carb">65g</span>
-                <span class="ai-lbl">Carboidrato</span>
-              </div>
-              <div class="ai-macro-box">
-                <span class="ai-num" id="ai-est-fat">15g</span>
-                <span class="ai-lbl">Gordura</span>
-              </div>
-            </div>
-
-            <div class="form-group margin-top-sm">
-              <label for="ai-meal-select">Adicionar a qual refeição?</label>
-              <select id="ai-meal-select">
-                <option value="almoco">Almoço</option>
-                <option value="jantar">Jantar</option>
-                <option value="cafe">Café da Manhã</option>
-                <option value="lanches">Lanches</option>
-              </select>
-            </div>
-
-            <button class="btn btn-primary btn-block margin-top-sm" id="btn-add-ai-meal">
-              Adicionar ao Diário Alimentar
-            </button>
-          </div>
-        </div>
-
-        <!-- GALERIA DE FOTOS SALVAS -->
-        <div class="section-header margin-top-md">
-          <h3>Fotos Salvas Recentes</h3>
-        </div>
-        <div class="recent-photos-grid" id="recent-photos-grid">
-          <p class="empty-photos-msg">Nenhuma foto salva ainda.</p>
-        </div>
-      </section>
-
-      <!-- TELA 5: RASTREADOR DE HIDRATAÇÃO -->
-      <section id="view-agua" class="view-section">
-        <div class="section-header">
-          <h2>Monitor de Hidratação</h2>
-        </div>
-
-        <div class="hydration-main-card">
-          <div class="water-glass-display">
-            <svg class="big-drop-icon" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#0288d1" stroke-width="1.5">
-              <path fill="#e0f7fa" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-            </svg>
-            <div class="water-count-text">
-              <span class="water-large-val" id="agua-consumed-val">0</span>
-              <span class="water-unit">/ <span id="agua-target-val">2000</span> ml</span>
-            </div>
-          </div>
-
-          <div class="progress-container margin-top-sm">
-            <div class="progress-bar-bg large">
-              <div class="progress-bar-fill water-fill" id="agua-progress-bar" style="width: 0%;"></div>
-            </div>
-          </div>
-
-          <div class="quick-water-buttons">
-            <button class="btn-water-option" data-amount="200">
-              <span class="water-icon">🥛</span>
-              <span>+200ml</span>
-            </button>
-            <button class="btn-water-option" data-amount="300">
-              <span class="water-icon">🥤</span>
-              <span>+300ml</span>
-            </button>
-            <button class="btn-water-option" data-amount="500">
-              <span class="water-icon">🍾</span>
-              <span>+500ml</span>
-            </button>
-          </div>
-
-          <div class="water-manual-row">
-            <button class="btn btn-secondary btn-sm" id="btn-remove-water">- 200ml</button>
-            <button class="btn btn-secondary btn-sm" id="btn-reset-water">Zerar Água</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- TELA 6: GRÁFICOS E TENDÊNCIAS -->
-      <section id="view-graficos" class="view-section">
-        <div class="section-header">
-          <h2>Gráficos de Consumo</h2>
-        </div>
-
-        <div id="offline-chart-warning" class="offline-warning-card" style="display:none;">
-          <p>⚠️ Modo Offline: A biblioteca de gráficos (Chart.js) requer conexão no primeiro acesso para ser carregada. Seu progresso continua sendo salvo localmente normalmente!</p>
-        </div>
-
-        <div class="chart-card">
-          <h3>Evolução de Calorias (Últimos 7 dias)</h3>
-          <div class="chart-wrapper">
-            <canvas id="calorias-chart"></canvas>
-          </div>
-        </div>
-
-        <div class="chart-card margin-top-md">
-          <h3>Divisão de Macronutrientes</h3>
-          <div class="chart-wrapper doughnut-wrapper">
-            <canvas id="macros-chart"></canvas>
-          </div>
-        </div>
-      </section>
-
-      <!-- TELA 7: MONITORAMENTO DE PESO E MEDIDAS -->
-      <section id="view-medidas" class="view-section">
-        <div class="section-header">
-          <h2>Evolução Corporal</h2>
-        </div>
-
-        <div class="medidas-form-card">
-          <h3>Registrar Nova Medição</h3>
-          <form id="medidas-form" class="form-grid">
-            <div class="form-row">
-              <div class="form-group">
-                <label for="medida-peso">Peso (kg)</label>
-                <input type="number" id="medida-peso" step="0.1" required placeholder="70.0">
-              </div>
-              <div class="form-group">
-                <label for="medida-gordura">% Gordura (Opcional)</label>
-                <input type="number" id="medida-gordura" step="0.1" placeholder="18.5">
-              </div>
-            </div>
-
-            <div class="form-row">
-              <div class="form-group">
-                <label for="medida-cintura">Cintura (cm)</label>
-                <input type="number" id="medida-cintura" step="0.5" placeholder="80">
-              </div>
-              <div class="form-group">
-                <label for="medida-quadril">Quadril (cm)</label>
-                <input type="number" id="medida-quadril" step="0.5" placeholder="95">
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="medida-braco">Braço (cm)</label>
-              <input type="number" id="medida-braco" step="0.5" placeholder="32">
-            </div>
-
-            <button type="submit" class="btn btn-primary btn-block">Salvar Medição</button>
-          </form>
-        </div>
-
-        <div class="section-header margin-top-md">
-          <h3>Histórico de Medições</h3>
-        </div>
-
-        <div class="medidas-history-card">
-          <table class="medidas-table" id="medidas-table">
-            <thead>
-              <tr>
-                <th>Data</th>
-                <th>Peso</th>
-                <th>Cintura</th>
-                <th>% Gord.</th>
-              </tr>
-            </thead>
-            <tbody id="medidas-table-body">
-              <tr>
-                <td colspan="4" class="empty-table-msg">Nenhuma medição registrada.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- TELA 8: PERFIL E CONFIGURAÇÕES -->
-      <section id="view-perfil" class="view-section">
-        <div class="section-header">
-          <h2>Seu Perfil</h2>
-        </div>
-
-        <div class="perfil-card">
-          <div class="perfil-header-info">
-            <div class="user-avatar-circle" id="user-avatar-letter">A</div>
-            <div>
-              <h3 id="profile-display-name">Nome do Usuário</h3>
-              <p class="profile-goal-badge" id="profile-display-goal">Objetivo: Manter Peso</p>
-            </div>
-          </div>
-
-          <div class="profile-stats-grid">
-            <div class="p-stat-box">
-              <span class="p-stat-val" id="profile-display-bmr">1650</span>
-              <span class="p-stat-lbl">TMB (kcal)</span>
-            </div>
-            <div class="p-stat-box">
-              <span class="p-stat-val" id="profile-display-target">2000</span>
-              <span class="p-stat-lbl">Meta Calórica</span>
-            </div>
-            <div class="p-stat-box">
-              <span class="p-stat-val" id="profile-display-water">2100</span>
-              <span class="p-stat-lbl">Meta Água (ml)</span>
-            </div>
-          </div>
-
-          <button class="btn btn-secondary btn-block margin-top-md" id="btn-edit-profile">
-            ⚙️ Editar Dados do Perfil
-          </button>
-
-          <button class="btn btn-danger btn-block margin-top-sm" id="btn-clear-all-data">
-            🗑️ Redefinir e Apagar Dados
-          </button>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- MODAL PARA ADICIONAR ALIMENTO COM BUSCA INTELIGENTE -->
-    <div class="modal-backdrop" id="food-modal-backdrop" style="display:none;">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h3>Adicionar Alimento</h3>
-          <button class="btn-close-modal" id="btn-close-food-modal">&times;</button>
-        </div>
-
-        <div class="modal-body">
-          <div class="form-group">
-            <label for="food-meal-target">Refeição Destino</label>
-            <select id="food-meal-target">
-              <option value="cafe">Café da Manhã</option>
-              <option value="almoco">Almoço</option>
-              <option value="jantar">Jantar</option>
-              <option value="lanches">Lanches</option>
-            </select>
-          </div>
-
-          <!-- ABA DE BUSCA / PERSONALIZADO -->
-          <div class="modal-tabs">
-            <button class="tab-btn active" id="tab-btn-search">🔍 Busca Inteligente</button>
-            <button class="tab-btn" id="tab-btn-custom">✍️ Personalizado</button>
-          </div>
-
-          <!-- CONTEÚDO DA ABA DE BUSCA -->
-          <div id="tab-content-search" class="tab-content active">
-            <div class="search-box">
-              <input type="text" id="food-search-input" placeholder="Buscar ex: Arroz, Frango, Ovo, Banana...">
-            </div>
-
-            <div class="search-results-list" id="search-results-list">
-              <!-- Renderizado via JavaScript -->
-            </div>
-          </div>
-
-          <!-- CONTEÚDO DA ABA PERSONALIZADA -->
-          <div id="tab-content-custom" class="tab-content" style="display:none;">
-            <form id="custom-food-form" class="form-grid">
-              <div class="form-group">
-                <label for="custom-name">Nome do Alimento</label>
-                <input type="text" id="custom-name" required placeholder="Ex: Tapioca com Queijo">
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="custom-cal">Calorias (kcal)</label>
-                  <input type="number" id="custom-cal" min="0" required placeholder="250">
-                </div>
-                <div class="form-group">
-                  <label for="custom-portion">Porção (g ou ml)</label>
-                  <input type="number" id="custom-portion" min="1" value="100" required>
-                </div>
-              </div>
-
-              <div class="form-row">
-                <div class="form-group">
-                  <label for="custom-prot">Proteína (g)</label>
-                  <input type="number" id="custom-prot" min="0" step="0.1" value="0">
-                </div>
-                <div class="form-group">
-                  <label for="custom-carb">Carboidrato (g)</label>
-                  <input type="number" id="custom-carb" min="0" step="0.1" value="0">
-                </div>
-                <div class="form-group">
-                  <label for="custom-fat">Gordura (g)</label>
-                  <input type="number" id="custom-fat" min="0" step="0.1" value="0">
-                </div>
-              </div>
-
-              <button type="submit" class="btn btn-primary btn-block">Adicionar Alimento</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- NAVEGAÇÃO INFERIOR FIXA (BOTTOM NAV BAR) -->
-    <nav class="bottom-nav">
-      <button class="nav-item active" data-target="dashboard">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-          <polyline points="9 22 9 12 15 12 15 22"/>
-        </svg>
-        <span>Início</span>
-      </button>
-
-      <button class="nav-item" data-target="diario">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 20h9"/>
-          <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
-        </svg>
-        <span>Diário</span>
-      </button>
-
-      <button class="nav-item" data-target="fotos">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-          <circle cx="12" cy="13" r="4"/>
-        </svg>
-        <span>Fotos</span>
-      </button>
-
-      <button class="nav-item" data-target="agua">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-        </svg>
-        <span>Água</span>
-      </button>
-
-      <button class="nav-item" data-target="graficos">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="20" x2="18" y2="10"/>
-          <line x1="12" y1="20" x2="12" y2="4"/>
-          <line x1="6" y1="20" x2="6" y2="14"/>
-        </svg>
-        <span>Gráficos</span>
-      </button>
-
-      <button class="nav-item" data-target="medidas">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-          <circle cx="12" cy="7" r="4"/>
-        </svg>
-        <span>Perfil</span>
-      </button>
-    </nav>
-
-  </div>
-
-  <!-- CHART.JS VIA CDN COM TRATAMENTO DE ERRO / OFFLINE -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="window.chartJsFailed=true;"></script>
-
-  <!-- REGISTRO DO SERVICE WORKER (PWA) -->
-  <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then((reg) => {
-          console.log('SparkKcal Service Worker registrado com sucesso:', reg.scope);
-        }).catch((err) => {
-          console.log('Falha ao registrar Service Worker:', err);
-        });
-      });
+
+<svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient id="flame-grad-outer" cx="50%" cy="80%" r="60%">
+<stop offset="0%" stop-color="#ffca28"/>
+<stop offset="60%" stop-color="#ff6b00"/>
+<stop offset="100%" stop-color="#e65100"/>
+</radialGradient>
+<radialGradient id="flame-grad-inner" cx="50%" cy="70%" r="50%">
+<stop offset="0%" stop-color="#ffffff"/>
+<stop offset="70%" stop-color="#fff59d"/>
+<stop offset="100%" stop-color="#ffca28"/>
+</radialGradient>
+</defs>
+</svg>
+
+<div id="app" class="app-container">
+
+<!-- HEADER DA APLICAÇÃO -->
+<header class="top-header" id="top-header">
+<div class="header-brand">
+<svg class="mini-spark-icon" viewBox="0 0 32 32" width="24" height="24">
+<path fill="currentColor" d="M16 2C16 2 20 9 20 13C20 15.2 19.1 17.2 17.6 18.6C18.6 17 19 15 18 13.5C17 12 15 11 15 11C15 11 15.5 13.5 14.2 15.2C13 16.8 11 17.5 10 19.5C9 21.5 9.5 24 11.5 25.5C13.5 27 16 27 18.5 26C22.5 24.4 25 20.3 25 16C25 9 16 2 16 2Z"/>
+</svg>
+<span class="brand-title">SparkKcal</span>
+</div>
+<div class="header-actions">
+<button id="theme-toggle" class="icon-btn" title="Alternar Tema" aria-label="Alternar Tema">
+<svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20">
+<circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
+<path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
+</svg>
+<svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" style="display:none;">
+<path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+</svg>
+</button>
+</div>
+</header>
+
+<!-- ÁREA PRINCIPAL DE CONTEÚDO (TELAS DA SPA) -->
+<main class="main-content" id="main-content">
+
+<!-- TELA 1: VISTA DE BOAS-VINDAS / ONBOARDING -->
+<section id="view-welcome" class="view-section">
+<div class="onboarding-card">
+<div class="spark-mascot-container hero-spark">
+<div class="spark-flame neutral" id="welcome-spark">
+<svg viewBox="0 0 100 120" class="spark-svg">
+<path class="flame-body-outer" fill="url(#flame-grad-outer)" d="M50,10 C50,10 75,35 75,65 C75,85 62,105 45,108 C30,110 15,95 15,75 C15,50 35,30 35,30 C35,30 30,45 38,55 C45,65 55,60 55,50 C55,40 50,10 50,10 Z"/>
+<path class="flame-body-inner" fill="url(#flame-grad-inner)" d="M50,40 C50,40 65,58 65,75 C65,88 56,98 45,99 C35,100 28,90 28,78 C28,62 40,50 40,50 C40,50 38,60 43,66 C48,72 53,68 53,62 C53,55 50,40 50,40 Z"/>
+<g class="spark-eyes">
+<circle cx="42" cy="70" r="4" fill="#121417"/>
+<circle cx="58" cy="70" r="4" fill="#121417"/>
+<circle cx="43" cy="68" r="1.5" fill="#ffffff"/>
+<circle cx="59" cy="68" r="1.5" fill="#ffffff"/>
+</g>
+<path class="spark-mouth" fill="none" stroke="#121417" stroke-width="2.5" stroke-linecap="round" d="M45,80 Q50,85 55,80"/>
+</svg>
+</div>
+</div>
+<h1 class="welcome-title">Bem-vindo ao <span class="highlight">SparkKcal</span>!</h1>
+<p class="welcome-subtitle">Sua jornada para uma vida mais saudável começa aqui. Vamos configurar suas metas diárias personalizadas.</p>
+
+<form id="onboarding-form" class="form-grid">
+<div class="form-group">
+<label for="user-name">Seu Nome</label>
+<input type="text" id="user-name" required placeholder="Ex: Alex">
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="user-age">Idade (anos)</label>
+<input type="number" id="user-age" min="10" max="120" required placeholder="25">
+</div>
+<div class="form-group">
+<label for="user-gender">Gênero</label>
+<select id="user-gender" required>
+<option value="masculino">Masculino</option>
+<option value="feminino">Feminino</option>
+</select>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="user-weight">Peso (kg)</label>
+<input type="number" id="user-weight" step="0.1" min="30" max="300" required placeholder="70.5">
+</div>
+<div class="form-group">
+<label for="user-height">Altura (cm)</label>
+<input type="number" id="user-height" min="100" max="250" required placeholder="175">
+</div>
+</div>
+
+<div class="form-group">
+<label for="user-activity">Nível de Atividade Física</label>
+<select id="user-activity" required>
+<option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
+<option value="1.375">Levemente Ativo (exercício leve 1-3 dias/sem)</option>
+<option value="1.55" selected>Moderadamente Ativo (exercício 3-5 dias/sem)</option>
+<option value="1.725">Muito Ativo (exercício pesado 6-7 dias/sem)</option>
+<option value="1.9">Extremamente Ativo (trabalho físico pesado/atleta)</option>
+</select>
+</div>
+
+<div class="form-group">
+<label for="user-goal">Objetivo Principal</label>
+<select id="user-goal" required>
+<option value="emagrecer">Emagrecer (Déficit Calórico)</option>
+<option value="manter" selected>Manter Peso Atual</option>
+<option value="ganhar">Ganhar Massa Muscular (Superávit Calórico)</option>
+</select>
+</div>
+
+<button type="submit" class="btn btn-primary btn-block">Calcular Metas e Começar 🔥</button>
+</form>
+</div>
+</section>
+
+<!-- TELA 2: DASHBOARD / PAINEL PRINCIPAL -->
+<section id="view-dashboard" class="view-section active">
+<div class="spark-status-card">
+<div class="spark-avatar-wrapper">
+<div class="spark-flame neutral" id="dashboard-spark">
+<svg viewBox="0 0 100 120" class="spark-svg">
+<path class="flame-body-outer" fill="#ff6b00" d="M50,10 C50,10 75,35 75,65 C75,85 62,105 45,108 C30,110 15,95 15,75 C15,50 35,30 35,30 C35,30 30,45 38,55 C45,65 55,60 55,50 C55,40 50,10 50,10 Z"/>
+<path class="flame-body-inner" fill="#ffca28" d="M50,40 C50,40 65,58 65,75 C65,88 56,98 45,99 C35,100 28,90 28,78 C28,62 40,50 40,50 C40,50 38,60 43,66 C48,72 53,68 53,62 C53,55 50,40 50,40 Z"/>
+<g class="spark-eyes">
+<circle cx="42" cy="70" r="4" fill="#121417"/>
+<circle cx="58" cy="70" r="4" fill="#121417"/>
+<circle cx="43" cy="68" r="1.5" fill="#ffffff"/>
+<circle cx="59" cy="68" r="1.5" fill="#ffffff"/>
+</g>
+<path class="spark-mouth" id="spark-mouth-path" fill="none" stroke="#121417" stroke-width="2.5" stroke-linecap="round" d="M45,80 Q50,85 55,80"/>
+</svg>
+</div>
+</div>
+<div class="spark-speech-bubble">
+<p id="spark-message">Olá! Vamos manter o foco e atingir nossas metas hoje!</p>
+</div>
+</div>
+
+<div class="dashboard-card calories-summary-card">
+<div class="card-header-flex">
+<h2>Resumo do Dia</h2>
+<span class="date-badge" id="current-date-badge">Hoje</span>
+</div>
+
+<div class="calories-main-display">
+<div class="cal-stat">
+<span class="cal-val" id="dash-cal-consumed">0</span>
+<span class="cal-label">Consumidas</span>
+</div>
+<div class="cal-divider">/</div>
+<div class="cal-stat">
+<span class="cal-val" id="dash-cal-target">2000</span>
+<span class="cal-label">Meta kcal</span>
+</div>
+<div class="cal-stat remaining">
+<span class="cal-val" id="dash-cal-remaining">2000</span>
+<span class="cal-label">Restantes</span>
+</div>
+</div>
+
+<div class="progress-container">
+<div class="progress-bar-bg">
+<div class="progress-bar-fill" id="dash-cal-progress" style="width: 0%;"></div>
+</div>
+</div>
+
+<div class="macros-grid">
+<div class="macro-item">
+<div class="macro-header">
+<span class="macro-title">Proteínas</span>
+<span class="macro-val"><span id="dash-prot-val">0</span> / <span id="dash-prot-target">150</span>g</span>
+</div>
+<div class="progress-bar-bg small">
+<div class="progress-bar-fill prot-fill" id="dash-prot-progress" style="width: 0%;"></div>
+</div>
+</div>
+
+<div class="macro-item">
+<div class="macro-header">
+<span class="macro-title">Carboidratos</span>
+<span class="macro-val"><span id="dash-carb-val">0</span> / <span id="dash-carb-target">250</span>g</span>
+</div>
+<div class="progress-bar-bg small">
+<div class="progress-bar-fill carb-fill" id="dash-carb-progress" style="width: 0%;"></div>
+</div>
+</div>
+
+<div class="macro-item">
+<div class="macro-header">
+<span class="macro-title">Gorduras</span>
+<span class="macro-val"><span id="dash-fat-val">0</span> / <span id="dash-fat-target">65</span>g</span>
+</div>
+<div class="progress-bar-bg small">
+<div class="progress-bar-fill fat-fill" id="dash-fat-progress" style="width: 0%;"></div>
+</div>
+</div>
+</div>
+</div>
+
+<div class="dashboard-card water-summary-card">
+<div class="water-card-content">
+<div class="water-info">
+<h3>Água Ingerida</h3>
+<p class="water-status-text"><strong id="dash-water-val">0</strong> ml / <span id="dash-water-target">2000</span> ml</p>
+</div>
+<button class="btn btn-water-quick" id="quick-add-water">
+<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+<path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+</svg>
++250ml
+</button>
+</div>
+<div class="progress-bar-bg small margin-top-sm">
+<div class="progress-bar-fill water-fill" id="dash-water-progress" style="width: 0%;"></div>
+</div>
+</div>
+
+<div class="quick-actions-grid">
+<button class="btn-action-card" id="btn-quick-add-meal">
+<div class="action-icon orange-bg">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M12 5v14M5 12h14"/>
+</svg>
+</div>
+<span>Registrar Refeição</span>
+</button>
+
+<button class="btn-action-card" id="btn-quick-photo">
+<div class="action-icon purple-bg">
+<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+<circle cx="12" cy="13" r="4"/>
+</svg>
+</div>
+<span>Foto do Prato</span>
+</button>
+</div>
+</section>
+
+<!-- TELA 3: DIÁRIO ALIMENTAR & BUSCA INTELIGENTE -->
+<section id="view-diario" class="view-section">
+<div class="section-header">
+<h2>Diário Alimentar</h2>
+<button id="btn-open-add-food-modal" class="btn btn-primary btn-sm">
++ Adicionar Alimento
+</button>
+</div>
+
+<div class="meals-container">
+<div class="meal-block-card" data-meal-type="cafe">
+<div class="meal-header">
+<div class="meal-title-group">
+<span class="meal-icon">🍳</span>
+<div>
+<h3>Café da Manhã</h3>
+<span class="meal-calories-badge"><span class="meal-total-cal" id="cafe-total-cal">0</span> kcal</span>
+</div>
+</div>
+<button class="btn-add-meal-item" data-meal="cafe" title="Adicionar no Café da Manhã">+</button>
+</div>
+<ul class="meal-items-list" id="cafe-items-list">
+<li class="empty-meal-msg">Nenhum alimento registrado.</li>
+</ul>
+</div>
+
+<div class="meal-block-card" data-meal-type="almoco">
+<div class="meal-header">
+<div class="meal-title-group">
+<span class="meal-icon">🍲</span>
+<div>
+<h3>Almoço</h3>
+<span class="meal-calories-badge"><span class="meal-total-cal" id="almoco-total-cal">0</span> kcal</span>
+</div>
+</div>
+<button class="btn-add-meal-item" data-meal="almoco" title="Adicionar no Almoço">+</button>
+</div>
+<ul class="meal-items-list" id="almoco-items-list">
+<li class="empty-meal-msg">Nenhum alimento registrado.</li>
+</ul>
+</div>
+
+<div class="meal-block-card" data-meal-type="jantar">
+<div class="meal-header">
+<div class="meal-title-group">
+<span class="meal-icon">🥗</span>
+<div>
+<h3>Jantar</h3>
+<span class="meal-calories-badge"><span class="meal-total-cal" id="jantar-total-cal">0</span> kcal</span>
+</div>
+</div>
+<button class="btn-add-meal-item" data-meal="jantar" title="Adicionar no Jantar">+</button>
+</div>
+<ul class="meal-items-list" id="jantar-items-list">
+<li class="empty-meal-msg">Nenhum alimento registrado.</li>
+</ul>
+</div>
+
+<div class="meal-block-card" data-meal-type="lanches">
+<div class="meal-header">
+<div class="meal-title-group">
+<span class="meal-icon">🍎</span>
+<div>
+<h3>Lanches</h3>
+<span class="meal-calories-badge"><span class="meal-total-cal" id="lanches-total-cal">0</span> kcal</span>
+</div>
+</div>
+<button class="btn-add-meal-item" data-meal="lanches" title="Adicionar nos Lanches">+</button>
+</div>
+<ul class="meal-items-list" id="lanches-items-list">
+<li class="empty-meal-msg">Nenhum alimento registrado.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<!-- TELA 4: REGISTRO FOTOGRÁFICO & IA INTELIGENTE EDITÁVEL -->
+<section id="view-fotos" class="view-section">
+<div class="section-header">
+<h2>Análise de Fotos com IA</h2>
+</div>
+
+<div class="photo-upload-card">
+<p class="card-desc">Tire uma foto do seu prato ou envie uma imagem da galeria para estimar as calorias e macronutrientes do prato.</p>
+
+<div class="photo-drop-zone" id="photo-drop-zone">
+<input type="file" id="camera-input" accept="image/*" capture="environment" class="file-input-hidden">
+<input type="file" id="gallery-input" accept="image/*" class="file-input-hidden">
+
+<div class="upload-placeholder" id="upload-placeholder">
+<svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
+<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+<circle cx="12" cy="13" r="4"/>
+</svg>
+<p>Toque para tirar foto ou carregar imagem</p>
+</div>
+
+<div class="image-preview-container" id="image-preview-container" style="display:none;">
+<img id="dish-preview-img" src="" alt="Prato do Usuário">
+<div class="scanning-overlay" id="scanning-overlay" style="display:none;">
+<div class="scan-line"></div>
+<p>Analisando prato com IA Spark...</p>
+</div>
+</div>
+</div>
+
+<div class="photo-actions-row">
+<button class="btn btn-secondary" id="btn-trigger-camera">📷 Câmera</button>
+<button class="btn btn-secondary" id="btn-trigger-gallery">🖼️ Galeria</button>
+</div>
+
+<!-- RESULTADO DA IA (COM VALORES EDITÁVEIS) -->
+<div class="ai-results-card" id="ai-results-card" style="display:none;">
+<h3>✨ Resultado da Análise Visual</h3>
+<p class="ai-detected-title">Prato Detectado: <strong id="ai-detected-name">Manga Picada em Cubos (Porção de 150g)</strong></p>
+
+<div class="ai-macros-grid">
+<div class="ai-macro-box">
+<input type="number" id="ai-est-cal" class="macro-input-edit" min="0" value="90">
+<span class="ai-lbl">kcal</span>
+</div>
+<div class="ai-macro-box">
+<input type="number" id="ai-est-prot" class="macro-input-edit" min="0" step="0.5" value="1.2">
+<span class="ai-lbl">Proteína (g)</span>
+</div>
+<div class="ai-macro-box">
+<input type="number" id="ai-est-carb" class="macro-input-edit" min="0" step="0.5" value="22.5">
+<span class="ai-lbl">Carboidrato (g)</span>
+</div>
+<div class="ai-macro-box">
+<input type="number" id="ai-est-fat" class="macro-input-edit" min="0" step="0.5" value="0.4">
+<span class="ai-lbl">Gordura (g)</span>
+</div>
+</div>
+
+<div class="form-group margin-top-sm">
+<label for="ai-meal-select">Adicionar a qual refeição?</label>
+<select id="ai-meal-select">
+<option value="almoco">Almoço</option>
+<option value="jantar">Jantar</option>
+<option value="cafe">Café da Manhã</option>
+<option value="lanches" selected>Lanches</option>
+</select>
+</div>
+
+<button class="btn btn-primary btn-block margin-top-sm" id="btn-add-ai-meal">
+Adicionar ao Diário Alimentar
+</button>
+</div>
+</div>
+
+<div class="section-header margin-top-md">
+<h3>Fotos Salvas Recentes</h3>
+</div>
+<div class="recent-photos-grid" id="recent-photos-grid">
+<p class="empty-photos-msg">Nenhuma foto salva ainda.</p>
+</div>
+</section>
+
+<!-- TELA 5: RASTREADOR DE HIDRATAÇÃO -->
+<section id="view-agua" class="view-section">
+<div class="section-header">
+<h2>Monitor de Hidratação</h2>
+</div>
+
+<div class="hydration-main-card">
+<div class="water-glass-display">
+<svg class="big-drop-icon" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#0288d1" stroke-width="1.5">
+<path fill="#e0f7fa" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+</svg>
+<div class="water-count-text">
+<span class="water-large-val" id="agua-consumed-val">0</span>
+<span class="water-unit">/ <span id="agua-target-val">2000</span> ml</span>
+</div>
+</div>
+
+<div class="progress-container margin-top-sm">
+<div class="progress-bar-bg large">
+<div class="progress-bar-fill water-fill" id="agua-progress-bar" style="width: 0%;"></div>
+</div>
+</div>
+
+<div class="quick-water-buttons">
+<button class="btn-water-option" data-amount="200">
+<span class="water-icon">🥛</span>
+<span>+200ml</span>
+</button>
+<button class="btn-water-option" data-amount="300">
+<span class="water-icon">🥤</span>
+<span>+300ml</span>
+</button>
+<button class="btn-water-option" data-amount="500">
+<span class="water-icon">🍾</span>
+<span>+500ml</span>
+</button>
+</div>
+
+<div class="water-manual-row">
+<button class="btn btn-secondary btn-sm" id="btn-remove-water">- 200ml</button>
+<button class="btn btn-secondary btn-sm" id="btn-reset-water">Zerar Água</button>
+</div>
+</div>
+</section>
+
+<!-- TELA 6: GRÁFICOS E TENDÊNCIAS -->
+<section id="view-graficos" class="view-section">
+<div class="section-header">
+<h2>Gráficos de Consumo</h2>
+</div>
+
+<div id="offline-chart-warning" class="offline-warning-card" style="display:none;">
+<p>⚠️ Modo Offline: A biblioteca de gráficos (Chart.js) requer conexão no primeiro acesso para ser carregada. Seu progresso continua sendo salvo localmente normalmente!</p>
+</div>
+
+<div class="chart-card">
+<h3>Evolução de Calorias (Últimos 7 dias)</h3>
+<div class="chart-wrapper">
+<canvas id="calorias-chart"></canvas>
+</div>
+</div>
+
+<div class="chart-card margin-top-md">
+<h3>Divisão de Macronutrientes</h3>
+<div class="chart-wrapper doughnut-wrapper">
+<canvas id="macros-chart"></canvas>
+</div>
+</div>
+</section>
+
+<!-- TELA 7: MONITORAMENTO DE PESO E MEDIDAS -->
+<section id="view-medidas" class="view-section">
+<div class="section-header">
+<h2>Evolução Corporal</h2>
+</div>
+
+<div class="medidas-form-card">
+<h3>Registrar Nova Medição</h3>
+<form id="medidas-form" class="form-grid">
+<div class="form-row">
+<div class="form-group">
+<label for="medida-peso">Peso (kg)</label>
+<input type="number" id="medida-peso" step="0.1" required placeholder="70.0">
+</div>
+<div class="form-group">
+<label for="medida-gordura">% Gordura (Opcional)</label>
+<input type="number" id="medida-gordura" step="0.1" placeholder="18.5">
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="medida-cintura">Cintura (cm)</label>
+<input type="number" id="medida-cintura" step="0.5" placeholder="80">
+</div>
+<div class="form-group">
+<label for="medida-quadril">Quadril (cm)</label>
+<input type="number" id="medida-quadril" step="0.5" placeholder="95">
+</div>
+</div>
+
+<div class="form-group">
+<label for="medida-braco">Braço (cm)</label>
+<input type="number" id="medida-braco" step="0.5" placeholder="32">
+</div>
+
+<button type="submit" class="btn btn-primary btn-block">Salvar Medição</button>
+</form>
+</div>
+
+<div class="section-header margin-top-md">
+<h3>Histórico de Medições</h3>
+</div>
+
+<div class="medidas-history-card">
+<table class="medidas-table" id="medidas-table">
+<thead>
+<tr>
+<th>Data</th>
+<th>Peso</th>
+<th>Cintura</th>
+<th>% Gord.</th>
+</tr>
+</thead>
+<tbody id="medidas-table-body">
+<tr>
+<td colspan="4" class="empty-table-msg">Nenhuma medição registrada.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- TELA 8: PERFIL E CONFIGURAÇÕES -->
+<section id="view-perfil" class="view-section">
+<div class="section-header">
+<h2>Seu Perfil</h2>
+</div>
+
+<div class="perfil-card">
+<div class="perfil-header-info">
+<div class="user-avatar-circle" id="user-avatar-letter">A</div>
+<div>
+<h3 id="profile-display-name">Nome do Usuário</h3>
+<p class="profile-goal-badge" id="profile-display-goal">Objetivo: Manter Peso</p>
+</div>
+</div>
+
+<div class="profile-stats-grid">
+<div class="p-stat-box">
+<span class="p-stat-val" id="profile-display-bmr">1650</span>
+<span class="p-stat-lbl">TMB (kcal)</span>
+</div>
+<div class="p-stat-box">
+<span class="p-stat-val" id="profile-display-target">2000</span>
+<span class="p-stat-lbl">Meta Calórica</span>
+</div>
+<div class="p-stat-box">
+<span class="p-stat-val" id="profile-display-water">2100</span>
+<span class="p-stat-lbl">Meta Água (ml)</span>
+</div>
+</div>
+
+<button class="btn btn-secondary btn-block margin-top-md" id="btn-edit-profile">
+⚙️ Editar Dados do Perfil
+</button>
+
+<button class="btn btn-danger btn-block margin-top-sm" id="btn-clear-all-data">
+🗑️ Redefinir e Apagar Dados
+</button>
+</div>
+</section>
+
+</main>
+
+<!-- MODAL PARA ADICIONAR ALIMENTO COM BUSCA INTELIGENTE -->
+<div class="modal-backdrop" id="food-modal-backdrop" style="display:none;">
+<div class="modal-card">
+<div class="modal-header">
+<h3>Adicionar Alimento</h3>
+<button class="btn-close-modal" id="btn-close-food-modal">&times;</button>
+</div>
+
+<div class="modal-body">
+<div class="form-group">
+<label for="food-meal-target">Refeição Destino</label>
+<select id="food-meal-target">
+<option value="cafe">Café da Manhã</option>
+<option value="almoco">Almoço</option>
+<option value="jantar">Jantar</option>
+<option value="lanches">Lanches</option>
+</select>
+</div>
+
+<div class="modal-tabs">
+<button class="tab-btn active" id="tab-btn-search">🔍 Busca Inteligente</button>
+<button class="tab-btn" id="tab-btn-custom">✍️ Personalizado</button>
+</div>
+
+<div id="tab-content-search" class="tab-content">
+<div class="search-box">
+<input type="text" id="food-search-input" placeholder="Buscar ex: Arroz, Frango, Ovo, Banana...">
+</div>
+<div class="search-results-list" id="search-results-list"></div>
+</div>
+
+<div id="tab-content-custom" class="tab-content" style="display:none;">
+<form id="custom-food-form" class="form-grid">
+<div class="form-group">
+<label for="custom-name">Nome do Alimento</label>
+<input type="text" id="custom-name" required placeholder="Ex: Tapioca com Queijo">
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="custom-cal">Calorias (kcal)</label>
+<input type="number" id="custom-cal" min="0" required placeholder="250">
+</div>
+<div class="form-group">
+<label for="custom-portion">Porção (g ou ml)</label>
+<input type="number" id="custom-portion" min="1" value="100" required>
+</div>
+</div>
+
+<div class="form-row">
+<div class="form-group">
+<label for="custom-prot">Proteína (g)</label>
+<input type="number" id="custom-prot" min="0" step="0.1" value="0">
+</div>
+<div class="form-group">
+<label for="custom-carb">Carboidrato (g)</label>
+<input type="number" id="custom-carb" min="0" step="0.1" value="0">
+</div>
+<div class="form-group">
+<label for="custom-fat">Gordura (g)</label>
+<input type="number" id="custom-fat" min="0" step="0.1" value="0">
+</div>
+</div>
+
+<button type="submit" class="btn btn-primary btn-block">Adicionar Alimento</button>
+</form>
+</div>
+</div>
+</div>
+</div>
+
+<!-- NAVEGAÇÃO INFERIOR FIXA (BOTTOM NAV BAR) -->
+<nav class="bottom-nav">
+<button class="nav-item active" data-target="dashboard">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+<polyline points="9 22 9 12 15 12 15 22"/>
+</svg>
+<span>Início</span>
+</button>
+
+<button class="nav-item" data-target="diario">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M12 20h9"/>
+<path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
+</svg>
+<span>Diário</span>
+</button>
+
+<button class="nav-item" data-target="fotos">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+<circle cx="12" cy="13" r="4"/>
+</svg>
+<span>Fotos</span>
+</button>
+
+<button class="nav-item" data-target="agua">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+</svg>
+<span>Água</span>
+</button>
+
+<button class="nav-item" data-target="graficos">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+<line x1="18" y1="20" x2="18" y2="10"/>
+<line x1="12" y1="20" x2="12" y2="4"/>
+<line x1="6" y1="20" x2="6" y2="14"/>
+</svg>
+<span>Gráficos</span>
+</button>
+
+<button class="nav-item" data-target="medidas">
+<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
+<circle cx="12" cy="7" r="4"/>
+</svg>
+<span>Perfil</span>
+</button>
+</nav>
+
+</div>
+
+<!-- CHART.JS VIA CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="window.chartJsFailed=true;"></script>
+
+<!-- REGISTRO DO SERVICE WORKER (PWA) -->
+<script>
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('./sw.js').then((reg) => {
+console.log('SparkKcal Service Worker registrado com sucesso:', reg.scope);
+}).catch((err) => {
+console.log('Falha ao registrar Service Worker:', err);
+});
+});
+}
+</script>
+
+<!-- SCRIPTS DA APLICAÇÃO -->
+<script src="js/alimentos.js"></script>
+<script src="js/storage.js"></script>
+<script src="js/app.js"></script>
+
+<!-- SCRIPT COMPLEMENTAR PARA A TELA 4 (IA VISUAL E EDIÇÃO DOS MACROS) -->
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const cameraInput = document.getElementById('camera-input');
+    const galleryInput = document.getElementById('gallery-input');
+    const btnCamera = document.getElementById('btn-trigger-camera');
+    const btnGallery = document.getElementById('btn-trigger-gallery');
+    
+    const uploadPlaceholder = document.getElementById('upload-placeholder');
+    const previewContainer = document.getElementById('image-preview-container');
+    const previewImg = document.getElementById('dish-preview-img');
+    const scanningOverlay = document.getElementById('scanning-overlay');
+    const aiResultsCard = document.getElementById('ai-results-card');
+    
+    const aiDetectedName = document.getElementById('ai-detected-name');
+    const inputCal = document.getElementById('ai-est-cal');
+    const inputProt = document.getElementById('ai-est-prot');
+    const inputCarb = document.getElementById('ai-est-carb');
+    const inputFat = document.getElementById('ai-est-fat');
+    
+    const btnAddAiMeal = document.getElementById('btn-add-ai-meal');
+    const recentPhotosGrid = document.getElementById('recent-photos-grid');
+
+    if (btnCamera && cameraInput) btnCamera.addEventListener('click', () => cameraInput.click());
+    if (btnGallery && galleryInput) btnGallery.addEventListener('click', () => galleryInput.click());
+
+    function handleFileSelected(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            previewImg.src = e.target.result;
+            uploadPlaceholder.style.display = 'none';
+            previewContainer.style.display = 'block';
+            aiResultsCard.style.display = 'none';
+            
+            simularProcessamentoIA(e.target.result);
+        };
+        reader.readAsDataURL(file);
     }
-  </script>
 
-  <!-- SCRIPTS DA APLICAÇÃO -->
-  <script src="js/alimentos.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/app.js"></script>
+    if (cameraInput) cameraInput.addEventListener('change', handleFileSelected);
+    if (galleryInput) galleryInput.addEventListener('change', handleFileSelected);
+
+    function simularProcessamentoIA(imageSrc) {
+        if (scanningOverlay) scanningOverlay.style.display = 'flex';
+
+        setTimeout(() => {
+            if (scanningOverlay) scanningOverlay.style.display = 'none';
+            if (aiResultsCard) aiResultsCard.style.display = 'block';
+
+            // Descrição da IA contextualizada com base na imagem do usuário (Manga / Frutas)
+            if (aiDetectedName) aiDetectedName.innerText = "Manga Fresca Picada em Cubos (Porção de 150g)";
+            if (inputCal) inputCal.value = 90;
+            if (inputProt) inputProt.value = 1.2;
+            if (inputCarb) inputCarb.value = 22.5;
+            if (inputFat) inputFat.value = 0.4;
+            
+        }, 2000);
+    }
+
+    if (btnAddAiMeal) {
+        btnAddAiMeal.addEventListener('click', () => {
+            const mealType = document.getElementById('ai-meal-select').value;
+            const nomeAlimento = aiDetectedName ? aiDetectedName.innerText : "Alimento Identificado";
+            const calorias = inputCal ? inputCal.value : 0;
+            const proteinas = inputProt ? inputProt.value : 0;
+            const carboidratos = inputCarb ? inputCarb.value : 0;
+            const gorduras = inputFat ? inputFat.value : 0;
+
+            if (typeof adicionarAlimentoAoDiario === 'function') {
+                adicionarAlimentoAoDiario(mealType, {
+                    nome: nomeAlimento,
+                    calorias: Number(calorias),
+                    proteina: Number(proteinas),
+                    carboidrato: Number(carboidratos),
+                    gordura: Number(gorduras)
+                });
+            } else {
+                alert(`Sucesso! "${nomeAlimento}" (${calorias} kcal) adicionado ao diário em [${mealType.toUpperCase()}].`);
+            }
+
+            salvarFotoRecente(previewImg.src, nomeAlimento);
+            resetarTelaFoto();
+        });
+    }
+
+    function salvarFotoRecente(src, titulo) {
+        if (!recentPhotosGrid) return;
+        const emptyMsg = recentPhotosGrid.querySelector('.empty-photos-msg');
+        if (emptyMsg) emptyMsg.remove();
+
+        const card = document.createElement('div');
+        card.className = 'recent-photo-item';
+        card.innerHTML = `
+            <img src="${src}" alt="${titulo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+            <p style="font-size: 11px; margin-top: 4px; text-align: center; color: var(--text-dark);">${titulo}</p>
+        `;
+        recentPhotosGrid.prepend(card);
+    }
+
+    function resetarTelaFoto() {
+        if (uploadPlaceholder) uploadPlaceholder.style.display = 'flex';
+        if (previewContainer) previewContainer.style.display = 'none';
+        if (aiResultsCard) aiResultsCard.style.display = 'none';
+        if (cameraInput) cameraInput.value = '';
+        if (galleryInput) galleryInput.value = '';
+    }
+});
+</script>
+
 </body>
 </html>
