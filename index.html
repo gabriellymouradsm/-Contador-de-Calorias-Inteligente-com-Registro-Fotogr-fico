@@ -1,743 +1,1135 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html class="light" lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SparkKcal — Contador de Calorias & Hábitos</title>
-<meta name="theme-color" content="#ff6b00">
-<meta name="description" content="Contador de calorias inteligente, registro fotográfico e monitoramento de hábitos offline.">
-<link rel="manifest" href="manifest.json">
-<link rel="stylesheet" href="styles.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<style>
-/* Estilos complementares para o novo formulário manual de fotos */
-.manual-photo-form-card { background: var(--card-bg, #fff); border: 2px solid var(--border-color, #dee2e6); border-radius: 12px; padding: 16px; margin-top: 20px; display: none; }
-.manual-photo-form-card h3 { color: var(--primary, #ff6b00); font-size: 16px; margin-bottom: 12px; }
-.file-input-hidden { display: none; }
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+  <title>SparkKcal - Aplicativo Completo</title>
+  <link rel="manifest" href="manifest.json">
 
-/* Estilos de Impressão para o PDF */
-@media print {
-  body { background: white !important; color: black !important; }
-  .bottom-nav, .top-header, .btn, .icon-btn { display: none !important; }
-  .view-section { display: block !important; page-break-after: always; opacity: 1 !important; visibility: visible !important; }
-  .dashboard-card, .perfil-card, .medidas-history-card { border: 1px solid #ccc !important; box-shadow: none !important; margin-bottom: 20px; }
-}
-</style>
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link href="https://fonts.googleapis.com" rel="preconnect"/>
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <!-- Material Symbols Outlined -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed": "#ffdf93",
+            "secondary-container": "#fdc825",
+            "surface-container-highest": "#d8e3fb",
+            "outline": "#8e7164",
+            "primary-fixed-dim": "#ffb693",
+            "primary-container": "#ff6b00",
+            "surface-container-high": "#dee8ff",
+            "surface-container-low": "#f0f3ff",
+            "outline-variant": "#e2bfb0",
+            "inverse-primary": "#ffb693",
+            "inverse-surface": "#263143",
+            "surface-dim": "#cfdaf2",
+            "surface": "#f9f9ff",
+            "inverse-on-surface": "#ecf1ff",
+            "on-primary-container": "#572000",
+            "surface-container": "#e7eeff",
+            "secondary-fixed-dim": "#f3c01a",
+            "tertiary": "#00639a",
+            "on-secondary-container": "#6e5400",
+            "tertiary-fixed-dim": "#96ccff",
+            "on-primary-fixed-variant": "#7a3000",
+            "on-error-container": "#93000a",
+            "on-primary": "#ffffff",
+            "error-container": "#ffdad6",
+            "on-tertiary-fixed-variant": "#004a75",
+            "surface-bright": "#f9f9ff",
+            "background": "#f9f9ff",
+            "on-background": "#111c2d",
+            "on-tertiary": "#ffffff",
+            "on-surface-variant": "#5a4136",
+            "surface-container-lowest": "#ffffff",
+            "tertiary-container": "#39a0ea",
+            "on-primary-fixed": "#351000",
+            "surface-tint": "#a04100",
+            "on-secondary-fixed": "#241a00",
+            "secondary": "#765b00",
+            "on-secondary-fixed-variant": "#594400",
+            "primary": "#a04100",
+            "surface-variant": "#d8e3fb",
+            "on-error": "#ffffff",
+            "tertiary-fixed": "#cee5ff",
+            "primary-fixed": "#ffdbcc",
+            "on-surface": "#111c2d",
+            "on-tertiary-container": "#003454",
+            "on-secondary": "#ffffff",
+            "error": "#ba1a1a",
+            "on-tertiary-fixed": "#001d32"
+          },
+          "borderRadius": {
+            "DEFAULT": "1rem",
+            "lg": "2rem",
+            "xl": "3rem",
+            "full": "9999px"
+          },
+          "fontFamily": {
+            "body-md": ["Plus Jakarta Sans"],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .tactile-card {
+      box-shadow: 0px 4px 20px -2px rgba(30, 41, 59, 0.05), 0px 1px 3px 0px rgba(30, 41, 59, 0.03);
+    }
+    .tactile-glow {
+      box-shadow: 0px 8px 24px -4px rgba(255, 107, 0, 0.16);
+    }
+    .view-section {
+      display: none;
+    }
+    .view-section.active {
+      display: block;
+    }
+    .nav-dock-glass {
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
 </head>
-<body class="light-theme">
-
-<svg style="display:none;" xmlns="http://www.w3.org/2000/svg">
-<defs>
-<radialGradient id="flame-grad-outer" cx="50%" cy="80%" r="60%">
-<stop offset="0%" stop-color="#ffca28"/>
-<stop offset="60%" stop-color="#ff6b00"/>
-<stop offset="100%" stop-color="#e65100"/>
-</radialGradient>
-<radialGradient id="flame-grad-inner" cx="50%" cy="70%" r="50%">
-<stop offset="0%" stop-color="#ffffff"/>
-<stop offset="70%" stop-color="#fff59d"/>
-<stop offset="100%" stop-color="#ffca28"/>
-</radialGradient>
-</defs>
-</svg>
-
-<div id="app" class="app-container">
-
-<!-- HEADER DA APLICAÇÃO -->
-<header class="top-header" id="top-header">
-<div class="header-brand">
-<svg class="mini-spark-icon" viewBox="0 0 32 32" width="24" height="24">
-<path fill="currentColor" d="M16 2C16 2 20 9 20 13C20 15.2 19.1 17.2 17.6 18.6C18.6 17 19 15 18 13.5C17 12 15 11 15 11C15 11 15.5 13.5 14.2 15.2C13 16.8 11 17.5 10 19.5C9 21.5 9.5 24 11.5 25.5C13.5 27 16 27 18.5 26C22.5 24.4 25 20.3 25 16C25 9 16 2 16 2Z"/>
-</svg>
-<span class="brand-title">SparkKcal</span>
-</div>
-<div class="header-actions">
-<button id="theme-toggle" class="icon-btn" title="Alternar Tema" aria-label="Alternar Tema">
-<svg class="sun-icon" viewBox="0 0 24 24" width="20" height="20">
-<circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/>
-<path stroke="currentColor" stroke-width="2" stroke-linecap="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/>
-</svg>
-<svg class="moon-icon" viewBox="0 0 24 24" width="20" height="20" style="display:none;">
-<path fill="currentColor" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-</svg>
-</button>
-</div>
-</header>
-
-<!-- ÁREA PRINCIPAL DE CONTEÚDO (TELAS DA SPA) -->
-<main class="main-content" id="main-content">
-
-<!-- TELA 1: VISTA DE BOAS-VINDAS / ONBOARDING -->
-<section id="view-welcome" class="view-section">
-<div class="onboarding-card">
-<div class="spark-mascot-container hero-spark">
-<div class="spark-flame neutral" id="welcome-spark">
-<svg viewBox="0 0 100 120" class="spark-svg">
-<path class="flame-body-outer" fill="url(#flame-grad-outer)" d="M50,10 C50,10 75,35 75,65 C75,85 62,105 45,108 C30,110 15,95 15,75 C15,50 35,30 35,30 C35,30 30,45 38,55 C45,65 55,60 55,50 C55,40 50,10 50,10 Z"/>
-<path class="flame-body-inner" fill="url(#flame-grad-inner)" d="M50,40 C50,40 65,58 65,75 C65,88 56,98 45,99 C35,100 28,90 28,78 C28,62 40,50 40,50 C40,50 38,60 43,66 C48,72 53,68 53,62 C53,55 50,40 50,40 Z"/>
-<g class="spark-eyes">
-<circle cx="42" cy="70" r="4" fill="#121417"/>
-<circle cx="58" cy="70" r="4" fill="#121417"/>
-<circle cx="43" cy="68" r="1.5" fill="#ffffff"/>
-<circle cx="59" cy="68" r="1.5" fill="#ffffff"/>
-</g>
-<path class="spark-mouth" fill="none" stroke="#121417" stroke-width="2.5" stroke-linecap="round" d="M45,80 Q50,85 55,80"/>
-</svg>
-</div>
-</div>
-<h1 class="welcome-title">Bem-vindo ao <span class="highlight">SparkKcal</span>!</h1>
-<p class="welcome-subtitle">Sua jornada para uma vida mais saudável começa aqui. Vamos configurar suas metas diárias personalizadas.</p>
-
-<form id="onboarding-form" class="form-grid">
-<div class="form-group">
-<label for="user-name">Seu Nome</label>
-<input type="text" id="user-name" required placeholder="Ex: Alex">
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="user-age">Idade (anos)</label>
-<input type="number" id="user-age" min="10" max="120" required placeholder="25">
-</div>
-<div class="form-group">
-<label for="user-gender">Gênero</label>
-<select id="user-gender" required>
-<option value="masculino">Masculino</option>
-<option value="feminino">Feminino</option>
-</select>
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="user-weight">Peso (kg)</label>
-<input type="number" id="user-weight" step="0.1" min="30" max="300" required placeholder="70.5">
-</div>
-<div class="form-group">
-<label for="user-height">Altura (cm)</label>
-<input type="number" id="user-height" min="100" max="250" required placeholder="175">
-</div>
-</div>
-
-<div class="form-group">
-<label for="user-activity">Nível de Atividade Física</label>
-<select id="user-activity" required>
-<option value="1.2">Sedentário (pouco ou nenhum exercício)</option>
-<option value="1.375">Levemente Ativo (exercício leve 1-3 dias/sem)</option>
-<option value="1.55" selected>Moderadamente Ativo (exercício 3-5 dias/sem)</option>
-<option value="1.725">Muito Ativo (exercício pesado 6-7 dias/sem)</option>
-<option value="1.9">Extremamente Ativo (trabalho físico pesado/atleta)</option>
-</select>
-</div>
-
-<div class="form-group">
-<label for="user-goal">Objetivo Principal</label>
-<select id="user-goal" required>
-<option value="emagrecer">Emagrecer (Déficit Calórico)</option>
-<option value="manter" selected>Manter Peso Atual</option>
-<option value="ganhar">Ganhar Massa Muscular (Superávit Calórico)</option>
-</select>
-</div>
-
-<button type="submit" class="btn btn-primary btn-block">Calcular Metas e Começar 🔥</button>
-</form>
-</div>
-</section>
-
-<!-- TELA 2: DASHBOARD / PAINEL PRINCIPAL -->
-<section id="view-dashboard" class="view-section active">
-<div class="spark-status-card">
-<div class="spark-avatar-wrapper">
-<div class="spark-flame neutral" id="dashboard-spark">
-<svg viewBox="0 0 100 120" class="spark-svg">
-<path class="flame-body-outer" fill="#ff6b00" d="M50,10 C50,10 75,35 75,65 C75,85 62,105 45,108 C30,110 15,95 15,75 C15,50 35,30 35,30 C35,30 30,45 38,55 C45,65 55,60 55,50 C55,40 50,10 50,10 Z"/>
-<path class="flame-body-inner" fill="#ffca28" d="M50,40 C50,40 65,58 65,75 C65,88 56,98 45,99 C35,100 28,90 28,78 C28,62 40,50 40,50 C40,50 38,60 43,66 C48,72 53,68 53,62 C53,55 50,40 50,40 Z"/>
-<g class="spark-eyes">
-<circle cx="42" cy="70" r="4" fill="#121417"/>
-<circle cx="58" cy="70" r="4" fill="#121417"/>
-<circle cx="43" cy="68" r="1.5" fill="#ffffff"/>
-<circle cx="59" cy="68" r="1.5" fill="#ffffff"/>
-</g>
-<path class="spark-mouth" id="spark-mouth-path" fill="none" stroke="#121417" stroke-width="2.5" stroke-linecap="round" d="M45,80 Q50,85 55,80"/>
-</svg>
-</div>
-</div>
-<div class="spark-speech-bubble">
-<p id="spark-message">Olá! Vamos manter o foco e atingir nossas metas hoje!</p>
-</div>
-</div>
-
-<div class="dashboard-card calories-summary-card">
-<div class="card-header-flex">
-<h2>Resumo do Dia</h2>
-<span class="date-badge" id="current-date-badge">Hoje</span>
-</div>
-
-<div class="calories-main-display">
-<div class="cal-stat">
-<span class="cal-val" id="dash-cal-consumed">0</span>
-<span class="cal-label">Consumidas</span>
-</div>
-<div class="cal-divider">/</div>
-<div class="cal-stat">
-<span class="cal-val" id="dash-cal-target">2000</span>
-<span class="cal-label">Meta kcal</span>
-</div>
-<div class="cal-stat remaining">
-<span class="cal-val" id="dash-cal-remaining">2000</span>
-<span class="cal-label">Restantes</span>
-</div>
-</div>
-
-<div class="progress-container">
-<div class="progress-bar-bg">
-<div class="progress-bar-fill" id="dash-cal-progress" style="width: 0%;"></div>
-</div>
-</div>
-
-<div class="macros-grid">
-<div class="macro-item">
-<div class="macro-header">
-<span class="macro-title">Proteínas</span>
-<span class="macro-val"><span id="dash-prot-val">0</span> / <span id="dash-prot-target">150</span>g</span>
-</div>
-<div class="progress-bar-bg small">
-<div class="progress-bar-fill prot-fill" id="dash-prot-progress" style="width: 0%;"></div>
-</div>
-</div>
-
-<div class="macro-item">
-<div class="macro-header">
-<span class="macro-title">Carboidratos</span>
-<span class="macro-val"><span id="dash-carb-val">0</span> / <span id="dash-carb-target">250</span>g</span>
-</div>
-<div class="progress-bar-bg small">
-<div class="progress-bar-fill carb-fill" id="dash-carb-progress" style="width: 0%;"></div>
-</div>
-</div>
-
-<div class="macro-item">
-<div class="macro-header">
-<span class="macro-title">Gorduras</span>
-<span class="macro-val"><span id="dash-fat-val">0</span> / <span id="dash-fat-target">65</span>g</span>
-</div>
-<div class="progress-bar-bg small">
-<div class="progress-bar-fill fat-fill" id="dash-fat-progress" style="width: 0%;"></div>
-</div>
-</div>
-</div>
-</div>
-
-<div class="dashboard-card water-summary-card">
-<div class="water-card-content">
-<div class="water-info">
-<h3>Água Ingerida</h3>
-<p class="water-status-text"><strong id="dash-water-val">0</strong> ml / <span id="dash-water-target">2000</span> ml</p>
-</div>
-<button class="btn btn-water-quick" id="quick-add-water">
-<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-<path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-</svg>
-+250ml
-</button>
-</div>
-<div class="progress-bar-bg small margin-top-sm">
-<div class="progress-bar-fill water-fill" id="dash-water-progress" style="width: 0%;"></div>
-</div>
-</div>
-
-<div class="quick-actions-grid">
-<button class="btn-action-card" id="btn-quick-add-meal">
-<div class="action-icon orange-bg">
-<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M12 5v14M5 12h14"/>
-</svg>
-</div>
-<span>Registrar Refeição</span>
-</button>
-
-<button class="btn-action-card" id="btn-quick-photo">
-<div class="action-icon purple-bg">
-<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-<circle cx="12" cy="13" r="4"/>
-</svg>
-</div>
-<span>Foto do Prato</span>
-</button>
-</div>
-</section>
-
-<!-- TELA 3: DIÁRIO ALIMENTAR & BUSCA INTELIGENTE -->
-<section id="view-diario" class="view-section">
-<div class="section-header">
-<h2>Diário Alimentar</h2>
-<button id="btn-open-add-food-modal" class="btn btn-primary btn-sm">
-+ Adicionar Alimento
-</button>
-</div>
-
-<div class="meals-container">
-<div class="meal-block-card" data-meal-type="cafe">
-<div class="meal-header">
-<div class="meal-title-group">
-<span class="meal-icon">🍳</span>
-<div>
-<h3>Café da Manhã</h3>
-<span class="meal-calories-badge"><span class="meal-total-cal" id="cafe-total-cal">0</span> kcal</span>
-</div>
-</div>
-<button class="btn-add-meal-item" data-meal="cafe" title="Adicionar no Café da Manhã">+</button>
-</div>
-<ul class="meal-items-list" id="cafe-items-list">
-<li class="empty-meal-msg">Nenhum alimento registrado.</li>
-</ul>
-</div>
-
-<div class="meal-block-card" data-meal-type="almoco">
-<div class="meal-header">
-<div class="meal-title-group">
-<span class="meal-icon">🍲</span>
-<div>
-<h3>Almoço</h3>
-<span class="meal-calories-badge"><span class="meal-total-cal" id="almoco-total-cal">0</span> kcal</span>
-</div>
-</div>
-<button class="btn-add-meal-item" data-meal="almoco" title="Adicionar no Almoço">+</button>
-</div>
-<ul class="meal-items-list" id="almoco-items-list">
-<li class="empty-meal-msg">Nenhum alimento registrado.</li>
-</ul>
-</div>
-
-<div class="meal-block-card" data-meal-type="jantar">
-<div class="meal-header">
-<div class="meal-title-group">
-<span class="meal-icon">🥗</span>
-<div>
-<h3>Jantar</h3>
-<span class="meal-calories-badge"><span class="meal-total-cal" id="jantar-total-cal">0</span> kcal</span>
-</div>
-</div>
-<button class="btn-add-meal-item" data-meal="jantar" title="Adicionar no Jantar">+</button>
-</div>
-<ul class="meal-items-list" id="jantar-items-list">
-<li class="empty-meal-msg">Nenhum alimento registrado.</li>
-</ul>
-</div>
-
-<div class="meal-block-card" data-meal-type="lanches">
-<div class="meal-header">
-<div class="meal-title-group">
-<span class="meal-icon">🍎</span>
-<div>
-<h3>Lanches</h3>
-<span class="meal-calories-badge"><span class="meal-total-cal" id="lanches-total-cal">0</span> kcal</span>
-</div>
-</div>
-<button class="btn-add-meal-item" data-meal="lanches" title="Adicionar nos Lanches">+</button>
-</div>
-<ul class="meal-items-list" id="lanches-items-list">
-<li class="empty-meal-msg">Nenhum alimento registrado.</li>
-</ul>
-</div>
-</div>
-</section>
-
-<!-- TELA 4: REGISTRO FOTOGRÁFICO COM CADASTRO MANUAL -->
-<section id="view-fotos" class="view-section">
-<div class="section-header">
-<h2>Registro Fotográfico de Refeições</h2>
-</div>
-
-<div class="photo-upload-card">
-<p class="card-desc">Tire uma foto do seu prato ou envie da galeria e preencha as informações nutricionais manualmente.</p>
-
-<div class="photo-drop-zone" id="photo-drop-zone">
-<input type="file" id="camera-input" accept="image/*" capture="environment" class="file-input-hidden">
-<input type="file" id="gallery-input" accept="image/*" class="file-input-hidden">
-
-<div class="upload-placeholder" id="upload-placeholder">
-<svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.5">
-<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-<circle cx="12" cy="13" r="4"/>
-</svg>
-<p>Toque para tirar foto ou carregar imagem</p>
-</div>
-
-<div class="image-preview-container" id="image-preview-container" style="display:none;">
-<img id="dish-preview-img" src="" alt="Prato do Usuário">
-</div>
-</div>
-
-<!-- FORMULÁRIO MANUAL DE CADASTRO DO PRATO -->
-<div class="manual-photo-form-card" id="manual-photo-form-card">
-<h3>✍️ Informações Nutricionais do Prato</h3>
-<form id="photo-meal-form" class="form-grid">
-<div class="form-group">
-<label for="photo-food-name">Nome do Alimento / Prato</label>
-<input type="text" id="photo-food-name" class="form-control" required placeholder="Ex: Prato Feito Completo">
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="photo-food-cal">Calorias (kcal)</label>
-<input type="number" id="photo-food-cal" class="form-control" min="0" required placeholder="500">
-</div>
-<div class="form-group">
-<label for="photo-food-portion">Porção (g ou ml)</label>
-<input type="number" id="photo-food-portion" class="form-control" min="1" value="100" required>
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="photo-food-prot">Proteína (g)</label>
-<input type="number" id="photo-food-prot" class="form-control" min="0" step="0.1" value="0">
-</div>
-<div class="form-group">
-<label for="photo-food-carb">Carboidrato (g)</label>
-<input type="number" id="photo-food-carb" class="form-control" min="0" step="0.1" value="0">
-</div>
-<div class="form-group">
-<label for="photo-food-fat">Gordura (g)</label>
-<input type="number" id="photo-food-fat" class="form-control" min="0" step="0.1" value="0">
-</div>
-</div>
-
-<div class="form-group margin-top-sm">
-<label for="photo-meal-select">Adicionar a qual refeição?</label>
-<select id="photo-meal-select" class="form-control">
-<option value="almoco">Almoço</option>
-<option value="jantar">Jantar</option>
-<option value="cafe">Café da Manhã</option>
-<option value="lanches">Lanches</option>
-</select>
-</div>
-
-<button type="submit" class="btn btn-primary btn-block margin-top-sm" id="btn-save-photo-meal">
-Adicionar ao Diário Alimentar
-</button>
-</form>
-</div>
-
-</div>
-
-<!-- GALERIA DE FOTOS SALVAS -->
-<div class="section-header margin-top-md">
-<h3>Fotos Salvas Recentes</h3>
-</div>
-<div class="recent-photos-grid" id="recent-photos-grid">
-<p class="empty-photos-msg">Nenhuma foto salva ainda.</p>
-</div>
-</section>
-
-<!-- TELA 5: RASTREADOR DE HIDRATAÇÃO -->
-<section id="view-agua" class="view-section">
-<div class="section-header">
-<h2>Monitor de Hidratação</h2>
-</div>
-
-<div class="hydration-main-card">
-<div class="water-glass-display">
-<svg class="big-drop-icon" viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="#0288d1" stroke-width="1.5">
-<path fill="#e0f7fa" d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-</svg>
-<div class="water-count-text">
-<span class="water-large-val" id="agua-consumed-val">0</span>
-<span class="water-unit">/ <span id="agua-target-val">2000</span> ml</span>
-</div>
-</div>
-
-<div class="progress-container margin-top-sm">
-<div class="progress-bar-bg large">
-<div class="progress-bar-fill water-fill" id="agua-progress-bar" style="width: 0%;"></div>
-</div>
-</div>
-
-<div class="quick-water-buttons">
-<button class="btn-water-option" data-amount="200">
-<span class="water-icon">🥛</span>
-<span>+200ml</span>
-</button>
-<button class="btn-water-option" data-amount="300">
-<span class="water-icon">🥤</span>
-<span>+300ml</span>
-</button>
-<button class="btn-water-option" data-amount="500">
-<span class="water-icon">🍾</span>
-<span>+500ml</span>
-</button>
-</div>
-
-<div class="water-manual-row">
-<button class="btn btn-secondary btn-sm" id="btn-remove-water">- 200ml</button>
-<button class="btn btn-secondary btn-sm" id="btn-reset-water">Zerar Água</button>
-</div>
-</div>
-</section>
-
-<!-- TELA 6: GRÁFICOS E TENDÊNCIAS -->
-<section id="view-graficos" class="view-section">
-<div class="section-header">
-<h2>Gráficos de Consumo</h2>
-</div>
-
-<div id="offline-chart-warning" class="offline-warning-card" style="display:none;">
-<p>⚠️ Modo Offline: A biblioteca de gráficos (Chart.js) requer conexão no primeiro acesso para ser carregada. Seu progresso continua sendo salvo localmente normalmente!</p>
-</div>
-
-<div class="chart-card">
-<h3>Evolução de Calorias (Últimos 7 dias)</h3>
-<div class="chart-wrapper">
-<canvas id="calorias-chart"></canvas>
-</div>
-</div>
-
-<div class="chart-card margin-top-md">
-<h3>Divisão de Macronutrientes</h3>
-<div class="chart-wrapper doughnut-wrapper">
-<canvas id="macros-chart"></canvas>
-</div>
-</div>
-</section>
-
-<!-- TELA 7: MONITORAMENTO DE PESO E MEDIDAS -->
-<section id="view-medidas" class="view-section">
-<div class="section-header">
-<h2>Evolução Corporal</h2>
-</div>
-
-<div class="medidas-form-card">
-<h3>Registrar Nova Medição</h3>
-<form id="medidas-form" class="form-grid">
-<div class="form-row">
-<div class="form-group">
-<label for="medida-peso">Peso (kg)</label>
-<input type="number" id="medida-peso" step="0.1" required placeholder="70.0">
-</div>
-<div class="form-group">
-<label for="medida-gordura">% Gordura (Opcional)</label>
-<input type="number" id="medida-gordura" step="0.1" placeholder="18.5">
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="medida-cintura">Cintura (cm)</label>
-<input type="number" id="medida-cintura" step="0.5" placeholder="80">
-</div>
-<div class="form-group">
-<label for="medida-quadril">Quadril (cm)</label>
-<input type="number" id="medida-quadril" step="0.5" placeholder="95">
-</div>
-</div>
-
-<div class="form-group">
-<label for="medida-braco">Braço (cm)</label>
-<input type="number" id="medida-braco" step="0.5" placeholder="32">
-</div>
-
-<button type="submit" class="btn btn-primary btn-block">Salvar Medição</button>
-</form>
-</div>
-
-<div class="section-header margin-top-md">
-<h3>Histórico de Medições</h3>
-</div>
-
-<div class="medidas-history-card">
-<table class="medidas-table" id="medidas-table">
-<thead>
-<tr>
-<th>Data</th>
-<th>Peso</th>
-<th>Cintura</th>
-<th>% Gord.</th>
-</tr>
-</thead>
-<tbody id="medidas-table-body">
-<tr>
-<td colspan="4" class="empty-table-msg">Nenhuma medição registrada.</td>
-</tr>
-</tbody>
-</table>
-</div>
-</section>
-
-<!-- TELA 8: PERFIL E CONFIGURAÇÕES -->
-<section id="view-perfil" class="view-section">
-<div class="section-header">
-<h2>Seu Perfil</h2>
-</div>
-
-<div class="perfil-card">
-<div class="perfil-header-info">
-<div class="user-avatar-circle" id="user-avatar-letter">A</div>
-<div>
-<h3 id="profile-display-name">Nome do Usuário</h3>
-<p class="profile-goal-badge" id="profile-display-goal">Objetivo: Manter Peso</p>
-</div>
-</div>
-
-<div class="profile-stats-grid">
-<div class="p-stat-box">
-<span class="p-stat-val" id="profile-display-bmr">1650</span>
-<span class="p-stat-lbl">TMB (kcal)</span>
-</div>
-<div class="p-stat-box">
-<span class="p-stat-val" id="profile-display-target">2000</span>
-<span class="p-stat-lbl">Meta Calórica</span>
-</div>
-<div class="p-stat-box">
-<span class="p-stat-val" id="profile-display-water">2100</span>
-<span class="p-stat-lbl">Meta Água (ml)</span>
-</div>
-</div>
-
-<!-- BOTÃO ADICIONADO PARA GERAR O RELATÓRIO EM PDF -->
-<button class="btn btn-primary btn-block margin-top-md" id="btn-gerar-pdf">
-📄 Gerar Relatório Completo em PDF
-</button>
-
-<button class="btn btn-secondary btn-block margin-top-sm" id="btn-edit-profile">
-⚙️ Editar Dados do Perfil
-</button>
-
-<button class="btn btn-danger btn-block margin-top-sm" id="btn-clear-all-data">
-🗑️ Redefinir e Apagar Dados
-</button>
-</div>
-</section>
-
-</main>
-
-<!-- MODAL PARA ADICIONAR ALIMENTO COM BUSCA INTELIGENTE -->
-<div class="modal-backdrop" id="food-modal-backdrop" style="display:none;">
-<div class="modal-card">
-<div class="modal-header">
-<h3>Adicionar Alimento</h3>
-<button class="btn-close-modal" id="btn-close-food-modal">&times;</button>
-</div>
-
-<div class="modal-body">
-<div class="form-group">
-<label for="food-meal-target">Refeição Destino</label>
-<select id="food-meal-target">
-<option value="cafe">Café da Manhã</option>
-<option value="almoco">Almoço</option>
-<option value="jantar">Jantar</option>
-<option value="lanches">Lanches</option>
-</select>
-</div>
-
-<div class="modal-tabs">
-<button class="tab-btn active" id="tab-btn-search">🔍 Busca Inteligente</button>
-<button class="tab-btn" id="tab-btn-custom">✍️ Personalizado</button>
-</div>
-
-<div id="tab-content-search" class="tab-content">
-<div class="search-box">
-<input type="text" id="food-search-input" placeholder="Buscar ex: Arroz, Frango, Ovo, Banana...">
-</div>
-<div class="search-results-list" id="search-results-list"></div>
-</div>
-
-<div id="tab-content-custom" class="tab-content" style="display:none;">
-<form id="custom-food-form" class="form-grid">
-<div class="form-group">
-<label for="custom-name">Nome do Alimento</label>
-<input type="text" id="custom-name" required placeholder="Ex: Tapioca com Queijo">
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="custom-cal">Calorias (kcal)</label>
-<input type="number" id="custom-cal" min="0" required placeholder="250">
-</div>
-<div class="form-group">
-<label for="custom-portion">Porção (g ou ml)</label>
-<input type="number" id="custom-portion" min="1" value="100" required>
-</div>
-</div>
-
-<div class="form-row">
-<div class="form-group">
-<label for="custom-prot">Proteína (g)</label>
-<input type="number" id="custom-prot" min="0" step="0.1" value="0">
-</div>
-<div class="form-group">
-<label for="custom-carb">Carboidrato (g)</label>
-<input type="number" id="custom-carb" min="0" step="0.1" value="0">
-</div>
-<div class="form-group">
-<label for="custom-fat">Gordura (g)</label>
-<input type="number" id="custom-fat" min="0" step="0.1" value="0">
-</div>
-</div>
-
-<button type="submit" class="btn btn-primary btn-block">Adicionar Alimento</button>
-</form>
-</div>
-</div>
-</div>
-</div>
-
-<!-- NAVEGAÇÃO INFERIOR FIXA (BOTTOM NAV BAR) -->
-<nav class="bottom-nav">
-<button class="nav-item active" data-target="dashboard">
-<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
-<polyline points="9 22 9 12 15 12 15 22"/>
-</svg>
-<span>Início</span>
-</button>
-
-<button class="nav-item" data-target="diario">
-<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M12 20h9"/>
-<path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/>
-</svg>
-<span>Diário</span>
-</button>
-
-<button class="nav-item" data-target="fotos">
-<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
-<circle cx="12" cy="13" r="4"/>
-</svg>
-<span>Fotos</span>
-</button>
-
-<button class="nav-item" data-target="agua">
-<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
-</svg>
-<span>Água</span>
-</button>
-
-<button class="nav-item" data-target="graficos">
-<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-<line x1="18" y1="20" x2="18" y2="10"/>
-<line x1="12" y1="20" x2="12" y2="4"/>
-<line x1="6" y1="20" x2="6" y2="14"/>
-</svg>
-<span>Gráficos</span>
-</button>
-
-<button class="nav-item" data-target="medidas">
-<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
-<path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/>
-<circle cx="12" cy="7" r="4"/>
-</svg>
-<span>Perfil</span>
-</button>
-</nav>
-
-</div>
-
+<body class="bg-background text-on-background min-h-screen font-body-md antialiased flex flex-col items-center">
+
+<!-- Mobile Shell Wrapper -->
+<div class="w-full max-w-[440px] min-h-screen bg-surface flex flex-col relative pb-32 shadow-2xl">
+
+  <!-- Shared Top App Bar -->
+  <header id="app-header" class="bg-surface-container-lowest shadow-sm flex justify-between items-center w-full px-5 py-3 sticky top-0 z-40 hidden">
+    <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('hoje')">
+      <div class="w-9 h-9 rounded-full overflow-hidden bg-primary-fixed flex items-center justify-center ring-2 ring-primary-container/20">
+        <img alt="Spark Mascot" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD14HcyeC48S24XN16MJ3yOGALbByIclvM8uluipYjA-mNhz98Jdelu3uQIuIY8OO8iR1bXekxJtpwjPztgGDADvUTbW2z308FR0JzxRxigpuwqZcNHtyiUWqp956YbiCcl2T4rVGYUDIbD8mtxnNwLDjTL0G2D_jw0TxG_4XIpWhnt-Ni0ZnS0XzhKZJC0NHHA6sELfiml8HoVCBNZhXK6lY_q8CMJ5xasLEYjF8obOGjsub2tp0gUhg"/>
+      </div>
+      <span class="text-xl font-bold text-primary tracking-tight">SparkKcal</span>
+    </div>
+    <div class="flex items-center gap-1.5 bg-primary-fixed/60 px-3 py-1 rounded-full cursor-pointer" onclick="switchView('onboarding')">
+      <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+      <span id="header-streak" class="text-xs font-bold text-primary"></span>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER FOR VIEWS -->
+  <main class="flex-1 px-5 pt-4 space-y-4">
+
+    <!-------------------------------- 0. ONBOARDING / TELA DE CADASTRO -------------------------------->
+    <section id="view-onboarding" class="view-section active space-y-4 pb-12">
+      <div class="text-center pt-2">
+        <div class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-surface-container-high text-xs text-on-tertiary-fixed-variant font-bold shadow-sm border border-surface-container-highest">
+          <span class="material-symbols-outlined text-[16px] text-tertiary" style="font-variation-settings: 'FILL' 1;">shield</span> 100% Local & Privado (Sem cadastro)
+        </div>
+      </div>
+
+      <div class="text-center flex flex-col items-center">
+        <div class="relative w-20 h-20 mb-2 flex items-center justify-center">
+          <div class="absolute inset-0 rounded-full bg-primary-fixed-dim/30 animate-pulse"></div>
+          <img alt="Spark Mascot" class="w-16 h-16 object-contain relative z-10 rounded-full bg-surface-container-lowest" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD14HcyeC48S24XN16MJ3yOGALbByIclvM8uluipYjA-mNhz98Jdelu3uQIuIY8OO8iR1bXekxJtpwjPztgGDADvUTbW2z308FR0JzxRxigpuwqZcNHtyiUWqp956YbiCcl2T4rVGYUDIbD8mtxnNwLDjTL0G2D_jw0TxG_4XIpWhnt-Ni0ZnS0XzhKZJC0NHHA6sELfiml8HoVCBNZhXK6lY_q8CMJ5xasLEYjF8obOGjsub2tp0gUhg"/>
+          <span class="absolute -bottom-1 -right-1 bg-primary-container text-on-primary rounded-full p-0.5">
+            <span class="material-symbols-outlined text-[12px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+          </span>
+        </div>
+        <h1 class="text-xl font-extrabold text-on-background tracking-tight">SparkKcal</h1>
+        <p class="text-xs text-on-surface-variant max-w-[280px] mt-0.5">Vamos calcular suas metas personalizadas e acender sua constância diária!</p>
+      </div>
+
+      <!-- 1. Quem é você? -->
+      <div class="tactile-card rounded-2xl p-4 bg-surface-container-lowest space-y-3 border border-surface-container-low">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">1</span>
+          <h2 class="font-bold text-sm text-on-surface">Quem é você?</h2>
+        </div>
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1 font-medium">Como gostaria de ser chamado(a)?</label>
+          <input type="text" id="inputUserName" value="Atleta" class="w-full bg-surface-container-lowest text-sm rounded-xl px-3 py-2.5 border border-outline-variant/50 focus:ring-2 focus:ring-primary-container font-bold text-on-surface"/>
+        </div>
+        <div>
+          <label class="block text-xs text-on-surface-variant mb-1 font-medium">Sexo biológico <span class="text-[10px] text-outline">(para cálculo metabólico TMB)</span></label>
+          <div class="grid grid-cols-2 gap-2">
+            <button type="button" onclick="setGender('Masculino')" id="btn-gender-masc" class="py-2.5 px-3 rounded-xl border border-primary-container text-xs font-bold bg-primary-fixed/30 text-primary flex items-center justify-center gap-1">
+              ♂️ Masculino
+            </button>
+            <button type="button" onclick="setGender('Feminino')" id="btn-gender-fem" class="py-2.5 px-3 rounded-xl border border-outline-variant/40 text-xs font-bold bg-surface-container-low text-on-surface-variant flex items-center justify-center gap-1">
+              ♀️ Feminino
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Medidas Corporais -->
+      <div class="tactile-card rounded-2xl p-4 bg-surface-container-lowest space-y-3 border border-surface-container-low">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">2</span>
+          <h2 class="font-bold text-sm text-on-surface">Medidas Corporais</h2>
+        </div>
+        <div class="space-y-3 text-xs">
+          <div>
+            <div class="flex justify-between font-bold mb-1">
+              <span class="text-on-surface-variant">Idade</span>
+              <span id="val-idade" class="text-primary font-extrabold">26 anos</span>
+            </div>
+            <input type="range" id="inputAge" min="15" max="90" value="26" class="w-full accent-primary-container cursor-pointer" oninput="updateOnboardingCalcs()"/>
+          </div>
+          <div>
+            <div class="flex justify-between font-bold mb-1">
+              <span class="text-on-surface-variant">Altura</span>
+              <span id="val-altura" class="text-primary font-extrabold">175 cm</span>
+            </div>
+            <input type="range" id="inputHeight" min="120" max="220" value="175" class="w-full accent-primary-container cursor-pointer" oninput="updateOnboardingCalcs()"/>
+          </div>
+          <div>
+            <div class="flex justify-between font-bold mb-1">
+              <span class="text-on-surface-variant">Peso Atual</span>
+              <span id="val-peso" class="text-primary font-extrabold">74.0 kg</span>
+            </div>
+            <input type="range" id="inputWeight" min="40" max="180" step="0.5" value="74" class="w-full accent-primary-container cursor-pointer" oninput="updateOnboardingCalcs()"/>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Rotina & Atividade -->
+      <div class="tactile-card rounded-2xl p-4 bg-surface-container-lowest space-y-3 border border-surface-container-low">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">3</span>
+          <h2 class="font-bold text-sm text-on-surface">Rotina & Atividade</h2>
+        </div>
+        <p class="text-[11px] text-on-surface-variant">Selecione o nível físico habitual durante a semana:</p>
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <button type="button" onclick="setActivity(1.2, this)" class="activity-btn p-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-left space-y-0.5">
+            <p class="font-bold text-on-surface">🚶 Sedentário</p>
+            <p class="text-[10px] text-outline">Pouco ou nenhum exercício</p>
+          </button>
+          <button type="button" onclick="setActivity(1.55, this)" class="activity-btn p-2.5 rounded-xl border-2 border-primary-container bg-primary-fixed/20 text-left space-y-0.5">
+            <p class="font-bold text-on-surface">🏃 Moderado</p>
+            <p class="text-[10px] text-outline">3 a 5 dias / semana</p>
+          </button>
+          <button type="button" onclick="setActivity(1.725, this)" class="activity-btn p-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-left space-y-0.5">
+            <p class="font-bold text-on-surface">⚡ Ativo</p>
+            <p class="text-[10px] text-outline">6 a 7 dias intensos</p>
+          </button>
+          <button type="button" onclick="setActivity(1.9, this)" class="activity-btn p-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-left space-y-0.5">
+            <p class="font-bold text-on-surface">🔥 Muito Ativo</p>
+            <p class="text-[10px] text-outline">Treino duplo / Trabalho físico</p>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4. Qual é a sua Meta? -->
+      <div class="tactile-card rounded-2xl p-4 bg-surface-container-lowest space-y-3 border border-surface-container-low">
+        <div class="flex items-center gap-2">
+          <span class="w-6 h-6 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold text-xs">4</span>
+          <h2 class="font-bold text-sm text-on-surface">Qual é a sua Meta?</h2>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-xs">
+          <button type="button" onclick="setGoal(-500, this)" class="goal-btn p-2 rounded-xl border-2 border-primary-container bg-primary-fixed/20 text-center">
+            <span class="block font-bold text-on-surface">📉 Perder</span>
+            <span class="text-[10px] text-primary">-500 kcal</span>
+          </button>
+          <button type="button" onclick="setGoal(0, this)" class="goal-btn p-2 rounded-xl border border-outline-variant/40 bg-surface-container-low text-center">
+            <span class="block font-bold text-on-surface">⚖️ Manter</span>
+            <span class="text-[10px] text-outline">Equilíbrio</span>
+          </button>
+          <button type="button" onclick="setGoal(400, this)" class="goal-btn p-2 rounded-xl border border-outline-variant/40 bg-surface-container-low text-center">
+            <span class="block font-bold text-on-surface">📈 Ganhar</span>
+            <span class="text-[10px] text-secondary">+300 kcal</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 5. Prévia dos Seus Resultados -->
+      <div class="tactile-card rounded-2xl p-4 bg-gradient-to-br from-primary-fixed/20 to-surface-container space-y-3 border border-primary-container/30">
+        <div class="flex justify-between items-center">
+          <h2 class="font-bold text-sm text-on-surface flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-primary text-[18px]">insights</span> Prévia dos Seus Resultados
+          </h2>
+          <span id="preview-tmb-badge" class="text-[10px] bg-primary-fixed text-primary font-bold px-2 py-0.5 rounded-full">TMB: 1.709 kcal</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div class="bg-surface-container-lowest p-3 rounded-xl border border-surface-container">
+            <span class="text-[10px] text-outline block font-bold uppercase">💧 Meta Calórica</span>
+            <span id="preview-kcal-val" class="text-2xl font-extrabold text-primary">2.149</span>
+            <span class="text-[10px] text-outline">kcal / dia</span>
+          </div>
+          <div class="bg-surface-container-lowest p-3 rounded-xl border border-surface-container">
+            <span class="text-[10px] text-outline block font-bold uppercase">💧 Meta de Água</span>
+            <span id="preview-water-val" class="text-2xl font-extrabold text-tertiary">2.600</span>
+            <span class="text-[10px] text-outline">ml / dia</span>
+          </div>
+        </div>
+
+        <div class="bg-surface-container-lowest p-3 rounded-xl border border-surface-container space-y-1.5">
+          <div class="flex justify-between text-[11px] font-bold">
+            <span class="text-outline">Distribuição de Macros Recomendada</span>
+            <span class="text-secondary">Fórmula Flexível</span>
+          </div>
+          <div class="h-2.5 w-full bg-surface-container rounded-full overflow-hidden flex">
+            <div class="bg-secondary-container h-full" style="width: 45%;"></div>
+            <div class="bg-primary-container h-full" style="width: 30%;"></div>
+            <div class="bg-tertiary-container h-full" style="width: 25%;"></div>
+          </div>
+          <div class="grid grid-cols-3 text-center text-[10px] pt-1 font-bold">
+            <div><span id="macro-carbs-val">242g</span><br/><span class="text-outline font-normal">45%</span></div>
+            <div><span id="macro-prot-val">161g</span><br/><span class="text-outline font-normal">30%</span></div>
+            <div><span id="macro-fat-val">60g</span><br/><span class="text-outline font-normal">25%</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-low rounded-xl p-3 text-[11px] text-outline space-y-1">
+        <p class="font-bold text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-primary">lock</span> Armazenamento 100% no seu aparelho: Seus dados ficam salvos localmente (localStorage). Sem login, sem trackers ou dados em servidores remotos. Funciona perfeitamente offline como PWA.</p>
+      </div>
+
+      <!-- Botão de Salvar e Conectar com o App -->
+      <button onclick="saveOnboardingAndStart()" class="w-full h-12 bg-primary-container text-on-primary font-bold rounded-full tactile-glow flex items-center justify-center gap-2 text-sm active:scale-95 transition-all cursor-pointer">
+        <span>Começar Minha Jornada Spark 🔥</span>
+      </button>
+
+      <div class="text-center text-[10px] text-outline pt-2">
+        💡 Adicione à Tela do Início para acesso instantâneo<br/>
+        SparkKcal PWA © 2026 • Foco, Vivacidade & Caloria Sob Controle
+      </div>
+    </section>
+
+    <!-------------------------------- 1. HOJE (DASHBOARD) -------------------------------->
+    <section id="view-hoje" class="view-section space-y-4">
+      <div class="flex justify-between items-end">
+        <div>
+          
+          <h1 id="greeting-name" class="text-xl text-on-surface font-extrabold tracking-tight mt-0.5">Olá, Atleta! 👋</h1>
+        </div>
+        <div class="bg-surface-container-lowest px-3 py-1 rounded-full border border-surface-container flex items-center gap-1.5 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-secondary-container"></span>
+          <span class="text-[11px] text-on-surface-variant font-bold">Modo Foco</span>
+        </div>
+      </div>
+
+      <!-- Gráfico de Consumo Diário -->
+      <div class="bg-surface-container-lowest rounded-2xl p-5 tactile-card border border-surface-container flex flex-col items-center">
+        <div class="w-full flex justify-between items-center mb-1">
+          <span class="text-base font-extrabold text-on-surface">Consumo Diário</span>
+          <span id="dashboard-target-label" class="text-xs text-on-surface-variant font-medium">Meta: 2.149 kcal</span>
+        </div>
+        <div class="relative w-44 h-44 flex items-center justify-center my-1">
+          <svg class="w-full h-full transform -rotate-90" viewBox="0 0 200 200">
+            <circle class="text-surface-container-low" cx="100" cy="100" fill="transparent" r="82" stroke="currentColor" stroke-width="14"></circle>
+            <circle id="calorie-ring-circle" cx="100" cy="100" fill="transparent" r="82" stroke="#ff6b00" stroke-dasharray="515.22" stroke-dashoffset="150" stroke-linecap="round" stroke-width="14"></circle>
+          </svg>
+          <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <span class="text-[10px] text-on-surface-variant font-bold tracking-wider">CONSUMIDO</span>
+            <span id="stat-consumed-kcal" class="text-3xl text-on-surface font-extrabold tracking-tight">1.730</span>
+            <span id="stat-remaining-kcal" class="text-[11px] text-primary-container font-bold bg-primary-fixed/50 px-2 py-0.5 rounded-full mt-0.5">Restam 419 kcal</span>
+          </div>
+        </div>
+        <div class="w-full grid grid-cols-2 gap-2 pt-3 border-t border-surface-container">
+          <div class="text-center p-2.5 rounded-xl bg-surface-container-low">
+            <span class="text-[11px] text-on-surface-variant block">Alvo Base</span>
+            <span id="dashboard-target-val-box" class="text-sm text-on-surface font-bold">2.149 kcal</span>
+          </div>
+          <div class="text-center p-2.5 rounded-xl bg-surface-container-low">
+            <span class="text-[11px] text-on-surface-variant block">Queimadas</span>
+            <span id="dashboard-burned-kcal" class="text-sm text-secondary font-bold">380 kcal 🔥</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Ações Rápidas -->
+      <div class="grid grid-cols-2 gap-2">
+        <button onclick="switchView('scan')" class="h-11 bg-surface-container-lowest border border-surface-container rounded-2xl flex items-center justify-center gap-1.5 text-on-surface font-semibold text-xs active:scale-95">
+          <span class="material-symbols-outlined text-primary text-[18px]">photo_camera</span> Registre Aqui!
+        </button>
+        <button onclick="switchView('hidratacao')" class="h-11 bg-surface-container-lowest border border-surface-container rounded-2xl flex items-center justify-center gap-1.5 text-tertiary font-semibold text-xs active:scale-95">
+          <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">water_drop</span> + Água
+        </button>
+      </div>
+
+      <!-- Grupos de Refeições -->
+      <div class="space-y-3 pt-2">
+        <div class="flex justify-between items-center px-1">
+          <h2 class="text-sm font-extrabold text-on-surface">Refeições de Hoje</h2>
+          <span class="text-[11px] text-on-surface-variant font-medium">4 grupos principais</span>
+        </div>
+        <div id="dashboard-groups-list" class="space-y-3"></div>
+      </div>
+    </section>
+
+    <!-------------------------------- 2. DIÁRIO ALIMENTAR -------------------------------->
+    <section id="view-diario" class="view-section space-y-4">
+      <div class="flex justify-between items-center">
+        <h1 class="text-xl font-extrabold text-on-surface">Diário Alimentar</h1>
+        <span class="text-xs bg-surface-container px-3 py-1 rounded-full font-bold text-primary">Hoje, 24 Out</span>
+      </div>
+      <div class="space-y-3" id="diario-container-refeicoes"></div>
+    </section>
+
+    <!-------------------------------- 3. REGISTRO MANUAL DE PRATO / FOTO -------------------------------->
+    <section id="view-scan" class="view-section space-y-4">
+      <div class="flex justify-between items-center">
+        <div>
+          <h1 class="text-xl font-extrabold text-on-surface">Adicionar Alimento</h1>
+          <p class="text-xs text-on-surface-variant">O item irá direto para o seu grupo correspondente</p>
+        </div>
+        <span class="px-2.5 py-1 rounded-full bg-surface-container text-primary text-[10px] font-bold">Manual</span>
+      </div>
+
+      <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-3">
+        <div>
+          <label class="block text-xs font-medium text-on-surface-variant mb-1">Escolher Grupo da Refeição</label>
+          <select id="foodMealCategory" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-on-surface">
+            <option value="Café da manhã">Café da manhã</option>
+            <option value="Almoço" selected>Almoço</option>
+            <option value="Lanche da tarde">Lanche da tarde</option>
+            <option value="Jantar">Jantar</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-xs font-medium text-on-surface-variant mb-1">Nome do Alimento / Prato</label>
+          <input type="text" id="foodName" placeholder="Ex: Frango grelhado com arroz" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-on-surface"/>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-medium text-on-surface-variant mb-1">Quantidade (g / ml)</label>
+            <input type="number" id="foodGrams" value="200" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-on-surface-variant mb-1">Calorias (kcal)</label>
+            <input type="number" id="foodCalories" value="350" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-on-surface"/>
+          </div>
+        </div>
+
+        <button onclick="saveManualFood()" class="w-full h-11 rounded-full bg-primary-container text-on-primary font-bold text-sm tactile-glow flex items-center justify-center gap-1 mt-3">
+          <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">add_task</span> Salvar no Grupo
+        </button>
+      </div>
+    </section>
+
+    <!-------------------------------- 4. TELA DE EXERCÍCIOS E TREINOS -------------------------------->
+    <section id="view-estatisticas" class="view-section space-y-4">
+      <div class="flex justify-between items-center px-1">
+        <div>
+          <span class="text-[10px] font-bold text-secondary uppercase tracking-wider block">CENTRAL DE TREINO 🔥</span>
+          <h1 class="text-xl font-extrabold text-on-surface">Exercícios & Gastos</h1>
+        </div>
+        <span class="px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed text-xs font-bold shadow-sm">Hoje</span>
+      </div>
+
+      <div class="bg-gradient-to-br from-secondary-fixed/40 to-surface-container rounded-2xl p-5 tactile-card border border-secondary-fixed/50 flex flex-col items-center">
+        <span class="text-xs font-bold text-secondary uppercase tracking-wider mb-1">Total Queimado Hoje</span>
+        <div class="flex items-baseline gap-1">
+          <span id="stat-total-burned" class="text-4xl font-extrabold text-on-surface">380</span>
+          <span class="text-sm font-bold text-outline">kcal</span>
+        </div>
+        <div class="w-full grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-secondary-fixed/30 text-center">
+          <div class="bg-surface-container-lowest/80 p-2.5 rounded-xl border border-secondary-fixed/20">
+            <span class="text-[10px] text-outline block font-medium">Tempo Ativo</span>
+            <span id="stat-total-time" class="text-sm font-extrabold text-primary">60 min</span>
+          </div>
+          <div class="bg-surface-container-lowest/80 p-2.5 rounded-xl border border-secondary-fixed/20">
+            <span class="text-[10px] text-outline block font-medium">Sessões Realizadas</span>
+            <span id="stat-total-sessions" class="text-sm font-extrabold text-secondary">2 treinos</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-3">
+        <h2 class="text-sm font-bold text-on-surface flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-secondary text-[18px]" style="font-variation-settings: 'FILL' 1;">fitness_center</span>
+          Registrar Novo Treino
+        </h2>
+        <div>
+          <label class="block text-xs font-medium text-on-surface-variant mb-1">Modalidade do Exercício</label>
+          <select id="exerciseType" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-on-surface" onchange="autoEstimateCalories()">
+            <option value="Musculação" data-rate="7">🏋️ Musculação / Hipertrofia (~7 kcal/min)</option>
+            <option value="Cardio / Esteira" data-rate="10">🏃 Corrida / Cardio Intenso (~10 kcal/min)</option>
+            <option value="HIIT / Funcional" data-rate="12">⚡ HIIT / Treino Funcional (~12 kcal/min)</option>
+            <option value="Caminhada Leve" data-rate="5">🚶 Caminhada Leve (~5 kcal/min)</option>
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label class="block text-xs font-medium text-on-surface-variant mb-1">Duração (minutos)</label>
+            <input type="number" id="exerciseMinutes" value="30" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-on-surface" oninput="autoEstimateCalories()"/>
+          </div>
+          <div>
+            <label class="block text-xs font-medium text-on-surface-variant mb-1">Calorias (kcal)</label>
+            <input type="number" id="exerciseCalories" value="210" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2.5 border-0 font-bold text-secondary"/>
+          </div>
+        </div>
+        <button onclick="saveExercise()" class="w-full h-11 rounded-full bg-secondary-container text-on-secondary-container font-bold text-sm tactile-glow flex items-center justify-center gap-1 mt-2">
+          Adicionar ao Gasto Diário
+        </button>
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <div class="flex justify-between items-center px-1">
+          <h2 class="text-sm font-extrabold text-on-surface">Treinos de Hoje</h2>
+          <span id="exercise-count-label" class="text-[11px] text-on-surface-variant font-medium">2 registrados</span>
+        </div>
+        <div id="exercise-history-list" class="space-y-2"></div>
+      </div>
+    </section>
+
+    <!-------------------------------- 5. HIDRATAÇÃO -------------------------------->
+    <section id="view-hidratacao" class="view-section space-y-4">
+      <div class="bg-surface-container-lowest rounded-2xl p-5 tactile-card border border-surface-container space-y-4 relative overflow-hidden">
+        <div class="flex justify-between items-start">
+          <div>
+            <span class="text-[10px] font-bold text-outline tracking-wider uppercase">HOJE</span>
+            <h2 class="text-base font-extrabold text-on-surface">Rastreador de Água</h2>
+          </div>
+          <span id="hyd-badge-pct" class="bg-tertiary-fixed text-on-tertiary-fixed-variant text-[11px] font-bold px-3 py-1 rounded-full">
+            75% da meta
+          </span>
+        </div>
+
+        <div class="flex justify-between items-center">
+          <div>
+            <div class="flex items-baseline gap-1">
+              <span id="hyd-current-text" class="text-4xl font-extrabold text-tertiary">2.100</span>
+              <span class="text-base font-bold text-outline">ml</span>
+            </div>
+            <p class="text-[11px] text-outline mt-0.5">Ingeridos até agora</p>
+
+            <div class="mt-3 space-y-0.5 text-xs">
+              <p class="font-bold text-on-surface flex items-center gap-1"><span class="material-symbols-outlined text-[14px] text-tertiary" style="font-variation-settings: 'FILL' 1;">flag</span> Meta: <span id="hyd-meta-label">2.600 ml</span></p>
+              <p class="text-outline flex items-center gap-1"><span class="material-symbols-outlined text-[14px]">water_drop</span> Faltam <span id="hyd-remaining-text">500 ml</span></p>
+            </div>
+          </div>
+
+          <div class="w-28 h-36 bg-surface-container-low rounded-2xl relative overflow-hidden border border-tertiary-fixed/40 flex flex-col justify-end p-1 shadow-inner">
+            <div id="hyd-bottle-title" class="absolute top-2 w-full text-center text-[10px] font-bold text-tertiary z-10">2.6L</div>
+            <div id="hyd-bottle-fill" class="w-full bg-gradient-to-t from-tertiary to-tertiary-container rounded-xl transition-all duration-500 relative flex items-center justify-center" style="height: 75%;">
+              <span class="material-symbols-outlined text-white text-[20px] opacity-80" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-3 border-t border-surface-container flex justify-between items-center text-xs">
+          <span class="text-outline">Próxima dose ideal:</span>
+          <span class="font-bold text-primary flex items-center gap-1">
+            <span class="material-symbols-outlined text-[14px]" style="font-variation-settings: 'FILL' 1;">schedule</span> 19:30
+          </span>
+        </div>
+
+        <div class="pt-3 border-t border-surface-container">
+          <span class="text-[10px] font-bold text-outline tracking-wider uppercase block mb-2">AJUSTE RÁPIDO DE ÁGUA</span>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="addWater(-250)" class="h-11 bg-error-container/40 hover:bg-error-container/60 rounded-xl px-3 flex items-center justify-center gap-1 text-xs font-bold text-error active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[18px]">remove</span> -250ml
+            </button>
+            <button onclick="addWater(250)" class="h-11 bg-tertiary-fixed hover:bg-tertiary-fixed/80 rounded-xl px-3 flex items-center justify-center gap-1 text-xs font-bold text-on-tertiary-fixed active:scale-95 transition-all">
+              <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">water_drop</span> +250ml
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-------------------------------- 6. TELA DE PERFIL -------------------------------->
+    <section id="view-perfil" class="view-section space-y-4">
+      <div class="flex justify-between items-center px-1">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-full bg-primary-fixed flex items-center justify-center">
+            <span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
+          </div>
+          <div>
+            <span class="text-[10px] font-bold text-primary tracking-wider block"></span>
+            <h1 class="text-lg font-extrabold text-on-surface leading-none">Meu Perfil</h1>
+          </div>
+        </div>
+        <button onclick="switchView('onboarding')" class="px-3 py-1.5 rounded-full bg-primary-container text-on-primary text-xs font-bold shadow-sm flex items-center gap-1 active:scale-95 transition-all cursor-pointer">
+          <span class="material-symbols-outlined text-[14px]">edit</span> Editar Perfil
+        </button>
+      </div>
+
+      <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-4 relative overflow-hidden">
+        <div class="flex items-center gap-3">
+          <div class="relative w-16 h-16 rounded-2xl bg-surface-container-low p-1.5 flex items-center justify-center shrink-0 shadow-inner">
+            <img alt="Avatar" class="w-full h-full object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuD14HcyeC48S24XN16MJ3yOGALbByIclvM8uluipYjA-mNhz98Jdelu3uQIuIY8OO8iR1bXekxJtpwjPztgGDADvUTbW2z308FR0JzxRxigpuwqZcNHtyiUWqp956YbiCcl2T4rVGYUDIbD8mtxnNwLDjTL0G2D_jw0TxG_4XIpWhnt-Ni0ZnS0XzhKZJC0NHHA6sELfiml8HoVCBNZhXK6lY_q8CMJ5xasLEYjF8obOGjsub2tp0gUhg"/>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1">
+              <h2 id="profile-name-title" class="text-base font-extrabold text-on-surface truncate">Atleta</h2>
+              <span class="material-symbols-outlined text-primary-container text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
+            </div>
+            <div class="inline-flex items-center gap-1 px-2.5 py-0.5 mt-1 bg-surface-container rounded-full text-on-tertiary-container text-[10px] font-bold">
+              <span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> 
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2 pt-2 border-t border-surface-container text-center">
+          <div class="bg-surface-container-low p-2 rounded-xl">
+            <span class="text-[10px] text-outline block font-medium flex items-center justify-center gap-0.5"><span class="material-symbols-outlined text-[12px] text-primary">scale</span> Peso Atual</span>
+            <span id="profile-weight-val" class="text-sm font-extrabold text-primary mt-0.5 block">74.0 kg</span>
+          </div>
+          <div class="bg-surface-container-low p-2 rounded-xl">
+            <span class="text-[10px] text-outline block font-medium flex items-center justify-center gap-0.5"><span class="material-symbols-outlined text-[12px] text-secondary">trending_down</span> Meta Alvo</span>
+            <span class="text-sm font-extrabold text-secondary mt-0.5 block">68.0 kg</span>
+          </div>
+          <div class="bg-surface-container-low p-2 rounded-xl">
+            <span class="text-[10px] text-outline block font-medium flex items-center justify-center gap-0.5"><span class="material-symbols-outlined text-[12px] text-tertiary" style="font-variation-settings: 'FILL' 1;">flag</span> Meta Kcal</span>
+            <span id="profile-target-val" class="text-sm font-extrabold text-tertiary mt-0.5 block">2.149 kcal</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Registrar / Editar Nova Medição -->
+      <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-3">
+        <h3 id="measurement-form-title" class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">monitor_weight</span> Registrar Nova Medição
+        </h3>
+        
+        <input type="hidden" id="editMeasurementIndex" value="-1"/>
+
+        <div class="grid grid-cols-2 gap-2 text-xs">
+          <div>
+            <label class="block text-[11px] text-on-surface-variant mb-1 font-medium">Data</label>
+            <input type="text" id="newMeasDate" value="" placeholder="17/09/2026" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2 border-0 font-bold text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-[11px] text-on-surface-variant mb-1 font-medium">Peso (kg)</label>
+            <input type="number" id="newMeasWeight" value="74.0" step="0.1" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2 border-0 font-bold text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-[11px] text-on-surface-variant mb-1 font-medium">Cintura (cm)</label>
+            <input type="number" id="newMeasCintura" placeholder="80" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2 border-0 font-bold text-on-surface"/>
+          </div>
+          <div>
+            <label class="block text-[11px] text-on-surface-variant mb-1 font-medium">% Gordura (Opcional)</label>
+            <input type="text" id="newMeasFat" placeholder="18.5" class="w-full bg-surface-container-low text-xs rounded-xl px-3 py-2 border-0 font-bold text-on-surface"/>
+          </div>
+        </div>
+
+        <button onclick="saveNewMeasurement()" class="w-full h-11 bg-primary-container text-on-primary font-bold rounded-xl text-xs tactile-glow flex items-center justify-center gap-1 mt-2 active:scale-95 transition-all cursor-pointer">
+          Salvar Medição
+        </button>
+      </div>
+
+      <!-- Histórico de Medições -->
+      <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-3">
+        <h3 class="text-xs font-bold text-on-surface flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-secondary text-[16px]" style="font-variation-settings: 'FILL' 1;">history</span> Histórico de Medições
+        </h3>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-surface-container text-outline text-[10px]">
+                <th class="pb-2 font-bold">Data</th>
+                <th class="pb-2 font-bold">Peso</th>
+                <th class="pb-2 font-bold">Cintura</th>
+                <th class="pb-2 font-bold">% Gord.</th>
+                <th class="pb-2 font-bold text-right">Ações</th>
+              </tr>
+            </thead>
+            <tbody id="measurement-history-tbody" class="divide-y divide-surface-container/50">
+              <!-- Renderizado via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Divisão Diária de Macros -->
+      <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-3">
+        <div class="flex justify-between items-center">
+          <h3 class="text-xs font-bold text-on-surface">Divisão Diária de Macros</h3>
+          <span class="text-[10px] font-bold text-secondary bg-secondary-fixed/40 px-2 py-0.5 rounded-full">100% calibrado</span>
+        </div>
+
+        <div class="space-y-2">
+          <div class="h-3 w-full bg-surface-container rounded-full overflow-hidden flex">
+            <div class="bg-secondary-container h-full" style="width: 45%;" title="Carboidratos 45%"></div>
+            <div class="bg-primary-container h-full" style="width: 30%;" title="Proteína 30%"></div>
+            <div class="bg-tertiary-container h-full" style="width: 25%;" title="Gordura 25%"></div>
+          </div>
+
+          <div class="flex justify-between items-center text-[11px] pt-1 font-bold">
+            <span class="flex items-center gap-1 text-on-surface"><span class="w-2 h-2 rounded-full bg-secondary-container"></span> Carbo 45%</span>
+            <span class="flex items-center gap-1 text-on-surface"><span class="w-2 h-2 rounded-full bg-primary-container"></span> Proteína 30%</span>
+            <span class="flex items-center gap-1 text-on-surface"><span class="w-2 h-2 rounded-full bg-tertiary-container"></span> Gordura 25%</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FIXED BOTTOM DOCK NAVIGATION -->
+  <nav id="app-nav" class="fixed bottom-0 left-0 right-0 w-full z-50 flex justify-around items-center h-20 max-w-[440px] mx-auto px-1 pb-safe nav-dock-glass border-t border-outline-variant/30 shadow-lg hidden">
+    <button onclick="switchView('scan')" id="nav-scan" class="flex flex-col items-center justify-center py-1 flex-1 text-on-surface-variant hover:text-primary">
+      <div class="w-10 h-10 rounded-full bg-primary-container text-on-primary tactile-glow flex items-center justify-center shadow-md">
+        <span class="material-symbols-outlined text-[20px]">add</span>
+      </div>
+      <span class="text-[10px] font-bold mt-0.5">Adicionar</span>
+    </button>
+    <button onclick="switchView('hoje')" id="nav-hoje" class="nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary py-1 flex-1">
+      <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">home</span>
+      <span class="text-[10px] mt-0.5">Hoje</span>
+    </button>
+    <button onclick="switchView('diario')" id="nav-diario" class="nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary py-1 flex-1">
+      <span class="material-symbols-outlined text-[22px]">menu_book</span>
+      <span class="text-[10px] mt-0.5">Diário</span>
+    </button>
+    <button onclick="switchView('estatisticas')" id="nav-estatisticas" class="nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary py-1 flex-1">
+      <span class="material-symbols-outlined text-[22px]">fitness_center</span>
+      <span class="text-[10px] mt-0.5">Treinos</span>
+    </button>
+    <button onclick="switchView('hidratacao')" id="nav-hidratacao" class="nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary py-1 flex-1">
+      <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">water_drop</span>
+      <span class="text-[10px] mt-0.5">Hidratação</span>
+    </button>
+    <button onclick="switchView('perfil')" id="nav-perfil" class="nav-btn flex flex-col items-center justify-center text-on-surface-variant hover:text-primary py-1 flex-1">
+      <span class="material-symbols-outlined text-[22px]" style="font-variation-settings: 'FILL' 1;">person</span>
+      <span class="text-[10px] mt-0.5">Perfil</span>
+    </button>
+  </nav>
+
+</div>
+
+<script>
+  let dailyTargetKcal = 2149;
+  let dailyWaterMl = 2600;
+  let currentWaterMl = 2100;
+  let selectedGender = 'Masculino';
+  let selectedActivityMultiplier = 1.55;
+  let selectedGoalDelta = -500;
+
+  let measurementsList = [
+    { date: '17/09/2026', weight: '74.0 kg', cintura: '80 cm', fat: '18.5%' }
+  ];
+
+  let mealGroups = {
+    'Café da manhã': [
+      { id: 101, name: 'Ovos mexidos, torrada integral e café', calories: 450, protein: 25, carbs: 35, fat: 15 }
+    ],
+    'Almoço': [
+      { id: 201, name: 'Frango grelhado, arroz, feijão e salada', calories: 720, protein: 55, carbs: 65, fat: 18 }
+    ],
+    'Lanche da tarde': [
+      { id: 301, name: 'Iogurte grego com maçã e aveia', calories: 240, protein: 18, carbs: 30, fat: 6 }
+    ],
+    'Jantar': [
+      { id: 401, name: 'Sopa de legumes com frango desfiado', calories: 320, protein: 22, carbs: 28, fat: 7 }
+    ]
+  };
+
+  let exercisesList = [
+    { id: 1, type: 'Musculação', minutes: 45, calories: 315 },
+    { id: 2, type: 'Caminhada Leve', minutes: 15, calories: 65 }
+  ];
+
+  function setGender(gender) {
+    selectedGender = gender;
+    const mascBtn = document.getElementById('btn-gender-masc');
+    const femBtn = document.getElementById('btn-gender-fem');
+    if (gender === 'Masculino') {
+      mascBtn.className = "py-2.5 px-3 rounded-xl border border-primary-container text-xs font-bold bg-primary-fixed/30 text-primary flex items-center justify-center gap-1";
+      femBtn.className = "py-2.5 px-3 rounded-xl border border-outline-variant/40 text-xs font-bold bg-surface-container-low text-on-surface-variant flex items-center justify-center gap-1";
+    } else {
+      femBtn.className = "py-2.5 px-3 rounded-xl border border-primary-container text-xs font-bold bg-primary-fixed/30 text-primary flex items-center justify-center gap-1";
+      mascBtn.className = "py-2.5 px-3 rounded-xl border border-outline-variant/40 text-xs font-bold bg-surface-container-low text-on-surface-variant flex items-center justify-center gap-1";
+    }
+    updateOnboardingCalcs();
+  }
+
+  function setActivity(multiplier, btnElement) {
+    selectedActivityMultiplier = multiplier;
+    document.querySelectorAll('.activity-btn').forEach(b => {
+      b.className = "activity-btn p-2.5 rounded-xl border border-outline-variant/40 bg-surface-container-low text-left space-y-0.5";
+    });
+    btnElement.className = "activity-btn p-2.5 rounded-xl border-2 border-primary-container bg-primary-fixed/20 text-left space-y-0.5";
+    updateOnboardingCalcs();
+  }
+
+  function setGoal(delta, btnElement) {
+    selectedGoalDelta = delta;
+    document.querySelectorAll('.goal-btn').forEach(b => {
+      b.className = "goal-btn p-2 rounded-xl border border-outline-variant/40 bg-surface-container-low text-center";
+    });
+    btnElement.className = "goal-btn p-2 rounded-xl border-2 border-primary-container bg-primary-fixed/20 text-center";
+    updateOnboardingCalcs();
+  }
+
+  function updateOnboardingCalcs() {
+    const age = parseInt(document.getElementById('inputAge').value) || 26;
+    const height = parseInt(document.getElementById('inputHeight').value) || 175;
+    const weight = parseFloat(document.getElementById('inputWeight').value) || 74;
+
+    document.getElementById('val-idade').innerText = `${age} anos`;
+    document.getElementById('val-altura').innerText = `${height} cm`;
+    document.getElementById('val-peso').innerText = `${weight.toFixed(1)} kg`;
+
+    let tmb = (10 * weight) + (6.25 * height) - (5 * age);
+    if (selectedGender === 'Masculino') {
+      tmb += 5;
+    } else {
+      tmb -= 161;
+    }
+
+    let tdee = Math.round(tmb * selectedActivityMultiplier);
+    dailyTargetKcal = Math.max(1200, tdee + selectedGoalDelta);
+    dailyWaterMl = Math.round(weight * 35);
+
+    let carbGrams = Math.round((dailyTargetKcal * 0.45) / 4);
+    let protGrams = Math.round((dailyTargetKcal * 0.30) / 4);
+    let fatGrams = Math.round((dailyTargetKcal * 0.25) / 9);
+
+    document.getElementById('preview-tmb-badge').innerText = `TMB: ${Math.round(tmb)} kcal`;
+    document.getElementById('preview-kcal-val').innerText = dailyTargetKcal.toLocaleString('pt-BR');
+    document.getElementById('preview-water-val').innerText = dailyWaterMl.toLocaleString('pt-BR');
+    document.getElementById('hyd-bottle-title').innerText = `${(dailyWaterMl/1000).toFixed(1)}L`;
+
+    document.getElementById('macro-carbs-val').innerText = `${carbGrams}g`;
+    document.getElementById('macro-prot-val').innerText = `${protGrams}g`;
+    document.getElementById('macro-fat-val').innerText = `${fatGrams}g`;
+  }
+
+  function switchView(viewId) {
+    document.querySelectorAll('.view-section').forEach(el => el.classList.remove('active'));
+    const target = document.getElementById('view-' + viewId);
+    if (target) target.classList.add('active');
+
+    const header = document.getElementById('app-header');
+    const nav = document.getElementById('app-nav');
+
+    if (viewId === 'onboarding') {
+      if (header) header.classList.add('hidden');
+      if (nav) nav.classList.add('hidden');
+    } else {
+      if (header) header.classList.remove('hidden');
+      if (nav) nav.classList.remove('hidden');
+    }
+
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+      btn.classList.remove('text-primary', 'font-bold');
+      btn.classList.add('text-on-surface-variant');
+    });
+    const activeNav = document.getElementById('nav-' + viewId);
+    if (activeNav) {
+      activeNav.classList.remove('text-on-surface-variant');
+      activeNav.classList.add('text-primary', 'font-bold');
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function saveOnboardingAndStart() {
+    const name = document.getElementById('inputUserName').value.trim() || 'Atleta';
+    const weight = parseFloat(document.getElementById('inputWeight').value) || 74.0;
+
+    localStorage.setItem('spark_profile', JSON.stringify({ name: name, weight: weight }));
+
+    document.getElementById('greeting-name').innerText = `Olá, ${name}! 👋`;
+    document.getElementById('profile-name-title').innerText = name;
+    document.getElementById('profile-weight-val').innerText = `${weight.toFixed(1)} kg`;
+    document.getElementById('profile-target-val').innerText = `${dailyTargetKcal} kcal`;
+    document.getElementById('dashboard-target-label').innerText = `Meta: ${dailyTargetKcal} kcal`;
+    document.getElementById('dashboard-target-val-box').innerText = `${dailyTargetKcal} kcal`;
+    document.getElementById('hyd-meta-label').innerText = `${dailyWaterMl} ml`;
+
+    updateDashboardCalculations();
+    switchView('hoje');
+  }
+
+  function saveNewMeasurement() {
+    const dateVal = document.getElementById('newMeasDate').value.trim() || new Date().toLocaleDateString('pt-BR');
+    const weightVal = document.getElementById('newMeasWeight').value || '74.0';
+    const fatVal = document.getElementById('newMeasFat').value.trim() || '-';
+    const cinturaVal = document.getElementById('newMeasCintura').value.trim() || '-';
+    const editIndex = parseInt(document.getElementById('editMeasurementIndex').value);
+
+    if (editIndex >= 0) {
+      measurementsList[editIndex] = {
+        date: dateVal,
+        weight: `${weightVal} kg`,
+        cintura: cinturaVal !== '-' && !cinturaVal.includes('cm') ? `${cinturaVal} cm` : cinturaVal,
+        fat: fatVal !== '-' && !fatVal.includes('%') ? `${fatVal}%` : fatVal
+      };
+      document.getElementById('editMeasurementIndex').value = "-1";
+      document.getElementById('measurement-form-title').innerHTML = `<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">monitor_weight</span> Registrar Nova Medição`;
+      alert('Medição atualizada com sucesso!');
+    } else {
+      measurementsList.unshift({
+        date: dateVal,
+        weight: `${weightVal} kg`,
+        cintura: cinturaVal !== '-' ? `${cinturaVal} cm` : '-',
+        fat: fatVal !== '-' ? `${fatVal}%` : '-'
+      });
+      alert('Nova medição salva com sucesso!');
+    }
+
+    document.getElementById('profile-weight-val').innerText = `${weightVal} kg`;
+    document.getElementById('newMeasDate').value = '';
+    renderMeasurementHistory();
+  }
+
+  function editMeasurement(index) {
+    const m = measurementsList[index];
+    document.getElementById('newMeasDate').value = m.date;
+    document.getElementById('newMeasWeight').value = parseFloat(m.weight) || 74;
+    document.getElementById('newMeasCintura').value = parseInt(m.cintura) || '';
+    document.getElementById('newMeasFat').value = parseFloat(m.fat) || '';
+    document.getElementById('editMeasurementIndex').value = index;
+    
+    document.getElementById('measurement-form-title').innerHTML = `<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">edit</span> Editando Medição (${m.date})`;
+    window.scrollTo({ top: 400, behavior: 'smooth' });
+  }
+
+  function deleteMeasurement(index) {
+    if (confirm('Deseja excluir este registro de medição?')) {
+      measurementsList.splice(index, 1);
+      renderMeasurementHistory();
+    }
+  }
+
+  function renderMeasurementHistory() {
+    const tbody = document.getElementById('measurement-history-tbody');
+    if (!tbody) return;
+
+    if (measurementsList.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="5" class="py-4 text-center text-outline">Nenhum registro de medição encontrado.</td></tr>`;
+      return;
+    }
+
+    tbody.innerHTML = measurementsList.map((m, idx) => `
+      <tr class="border-b border-surface-container/30">
+        <td class="py-3 text-on-surface font-medium">${m.date}</td>
+        <td class="py-3 font-bold text-primary">${m.weight}</td>
+        <td class="py-3 text-outline">${m.cintura}</td>
+        <td class="py-3 text-outline">${m.fat}</td>
+        <td class="py-3 text-right">
+          <div class="inline-flex items-center gap-1.5">
+            <button onclick="editMeasurement(${idx})" class="px-2.5 py-1 rounded-lg bg-surface-container-low hover:bg-surface-container text-xs font-bold text-on-surface flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined text-[14px]">edit</span> Editar
+            </button>
+            <button onclick="deleteMeasurement(${idx})" class="px-2.5 py-1 rounded-lg bg-error text-on-error text-xs font-bold flex items-center gap-1 transition-all">
+              <span class="material-symbols-outlined text-[14px]">delete</span> Excluir
+            </button>
+          </div>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  function addWater(amount) {
+    currentWaterMl = Math.max(0, Math.min(dailyWaterMl * 2, currentWaterMl + amount));
+    updateHydrationDisplay();
+  }
+
+  function updateHydrationDisplay() {
+    const remaining = Math.max(0, dailyWaterMl - currentWaterMl);
+    document.getElementById('hyd-current-text').innerText = currentWaterMl.toLocaleString('pt-BR');
+    document.getElementById('hyd-remaining-text').innerText = `${remaining.toLocaleString('pt-BR')} ml`;
+
+    let pct = Math.min(100, Math.round((currentWaterMl / dailyWaterMl) * 100));
+    document.getElementById('hyd-badge-pct').innerText = `${pct}% da meta`;
+    const bottleFill = document.getElementById('hyd-bottle-fill');
+    if (bottleFill) bottleFill.style.height = pct + '%';
+  }
+
+  function autoEstimateCalories() {
+    const select = document.getElementById('exerciseType');
+    const rate = parseFloat(select.options[select.selectedIndex].getAttribute('data-rate')) || 7;
+    const minutes = parseInt(document.getElementById('exerciseMinutes').value) || 30;
+    document.getElementById('exerciseCalories').value = Math.round(rate * minutes);
+  }
+
+  function saveExercise() {
+    const type = document.getElementById('exerciseType').value;
+    const minutes = parseInt(document.getElementById('exerciseMinutes').value) || 30;
+    const calories = parseInt(document.getElementById('exerciseCalories').value) || 200;
+
+    exercisesList.unshift({ id: Date.now(), type: type, minutes: minutes, calories: calories });
+    updateDashboardCalculations();
+    alert('Treino registrado com sucesso!');
+  }
+
+  function deleteExercise(id) {
+    if (confirm('Deseja excluir este registro de treino?')) {
+      exercisesList = exercisesList.filter(e => e.id !== id);
+      updateDashboardCalculations();
+    }
+  }
+
+  function updateDashboardCalculations() {
+    let allItems = [];
+    Object.values(mealGroups).forEach(arr => allItems.push(...arr));
+
+    let totalConsumed = allItems.reduce((acc, item) => acc + item.calories, 0);
+    let totalBurned = exercisesList.reduce((acc, item) => acc + item.calories, 0);
+    let totalMinutes = exercisesList.reduce((acc, item) => acc + item.minutes, 0);
+
+    let remaining = dailyTargetKcal - totalConsumed;
+
+    document.getElementById('stat-consumed-kcal').innerText = totalConsumed.toLocaleString('pt-BR');
+    document.getElementById('dashboard-burned-kcal').innerText = `${totalBurned} kcal 🔥`;
+    
+    const remElem = document.getElementById('stat-remaining-kcal');
+    if (remaining >= 0) {
+      remElem.innerText = `Restam ${remaining.toLocaleString('pt-BR')} kcal`;
+      remElem.className = "text-[11px] text-primary-container font-bold bg-primary-fixed/50 px-2 py-0.5 rounded-full mt-0.5";
+    } else {
+      remElem.innerText = `Excedido em ${Math.abs(remaining)} kcal`;
+      remElem.className = "text-[11px] text-error font-bold bg-error-container px-2 py-0.5 rounded-full mt-0.5";
+    }
+
+    let ratio = Math.min(1, totalConsumed / dailyTargetKcal);
+    let dashOffset = 515.22 - (515.22 * ratio);
+    const ring = document.getElementById('calorie-ring-circle');
+    if (ring) ring.style.strokeDashoffset = dashOffset;
+
+    document.getElementById('stat-total-burned').innerText = totalBurned;
+    document.getElementById('stat-total-time').innerText = `${totalMinutes} min`;
+    document.getElementById('stat-total-sessions').innerText = `${exercisesList.length} treinos`;
+    document.getElementById('exercise-count-label').innerText = `${exercisesList.length} registrados`;
+
+    const exerciseContainer = document.getElementById('exercise-history-list');
+    if (exerciseContainer) {
+      if (exercisesList.length === 0) {
+        exerciseContainer.innerHTML = `<p class="text-xs text-outline text-center py-4">Nenhum treino registrado hoje.</p>`;
+      } else {
+        exerciseContainer.innerHTML = exercisesList.map(e => `
+          <div class="bg-surface-container-lowest rounded-xl p-3 tactile-card border border-surface-container flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+              <div class="w-9 h-9 rounded-xl bg-secondary-fixed/50 flex items-center justify-center text-secondary font-bold">🔥</div>
+              <div>
+                <h3 class="font-bold text-xs text-on-surface">${e.type}</h3>
+                <p class="text-[10px] text-outline">Duração: ${e.minutes} minutos</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-extrabold text-secondary">${e.calories} kcal</span>
+              <button onclick="deleteExercise(${e.id})" class="w-6 h-6 rounded-lg bg-error-container/40 text-error flex items-center justify-center">
+                <span class="material-symbols-outlined text-[14px]">delete</span>
+              </button>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    renderAllGroups();
+    updateHydrationDisplay();
+  }
+
+  function renderAllGroups() {
+    const containerDash = document.getElementById('dashboard-groups-list');
+    const containerDiario = document.getElementById('diario-container-refeicoes');
+    
+    let groupNames = ['Café da manhã', 'Almoço', 'Lanche da tarde', 'Jantar'];
+
+    let htmlContent = groupNames.map(groupName => {
+      let items = mealGroups[groupName] || [];
+      let totalCal = items.reduce((acc, item) => acc + item.calories, 0);
+      let itemsDescription = items.length > 0 ? items.map(i => i.name).join(', ') : 'Nenhum item adicionado';
+      let totalProt = items.reduce((acc, item) => acc + (item.protein || 0), 0);
+      let totalCarbs = items.reduce((acc, item) => acc + (item.carbs || 0), 0);
+      let totalFat = items.reduce((acc, item) => acc + (item.fat || 0), 0);
+
+      return `
+        <div class="bg-surface-container-lowest rounded-2xl p-4 tactile-card border border-surface-container space-y-2">
+          <div class="flex justify-between items-center border-b border-surface-container pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-lg">🍽️</span>
+              <h3 class="font-bold text-sm text-on-surface">${groupName}</h3>
+            </div>
+            <div class="flex items-center gap-2">
+              <span class="text-sm font-extrabold text-primary-container">${totalCal} kcal</span>
+              <button onclick="openAddModalForGroup('${groupName}')" title="Adicionar item" class="w-7 h-7 rounded-lg bg-primary-fixed/50 text-primary flex items-center justify-center">
+                <span class="material-symbols-outlined text-[16px]">add</span>
+              </button>
+            </div>
+          </div>
+          <div class="text-xs text-on-surface-variant space-y-1">
+            <p class="font-medium">${itemsDescription}</p>
+            ${items.length > 0 ? `<div class="flex justify-between text-[10px] text-outline pt-1"><span>${totalProt}p • ${totalCarbs}c • ${totalFat}g</span> <button onclick="clearGroup('${groupName}')" class="text-error font-bold">Limpar Grupo</button></div>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    if (containerDash) containerDash.innerHTML = htmlContent;
+    if (containerDiario) containerDiario.innerHTML = htmlContent;
+  }
+
+  function openAddModalForGroup(groupName) {
+    document.getElementById('foodMealCategory').value = groupName;
+    switchView('scan');
+  }
+
+  function saveManualFood() {
+    const category = document.getElementById('foodMealCategory').value;
+    const name = document.getElementById('foodName').value || 'Alimento Personalizado';
+    const calories = parseInt(document.getElementById('foodCalories').value) || 300;
+    const protein = 15;
+    const carbs = 30;
+    const fat = 8;
+
+    if (!mealGroups[category]) {
+      mealGroups[category] = [];
+    }
+
+    mealGroups[category].push({
+      id: Date.now(),
+      name: name,
+      calories: calories,
+      protein: protein,
+      carbs: carbs,
+      fat: fat
+    });
+
+    updateDashboardCalculations();
+    alert(`Alimento adicionado com sucesso ao grupo ${category}!`);
+    switchView('hoje');
+  }
+
+  function clearGroup(groupName) {
+    if (confirm(`Deseja limpar todos os itens do grupo ${groupName}?`)) {
+      mealGroups[groupName] = [];
+      updateDashboardCalculations();
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    updateOnboardingCalcs();
+    const saved = localStorage.getItem('spark_profile');
+    if (saved) {
+      const p = JSON.parse(saved);
+      document.getElementById('greeting-name').innerText = `Olá, ${p.name}! 👋`;
+      document.getElementById('profile-name-title').innerText = p.name;
+      if (p.weight) {
+        document.getElementById('profile-weight-val').innerText = `${p.weight} kg`;
+        document.getElementById('inputWeight').value = p.weight;
+      }
+      switchView('hoje');
+    } else {
+      switchView('onboarding');
+    }
+    updateDashboardCalculations();
+    renderMeasurementHistory();
+  });
+  
+  
 <!-- CHART.JS VIA CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="window.chartJsFailed=true;"></script>
 
@@ -759,119 +1151,7 @@ console.log('Falha ao registrar Service Worker:', err);
 <script src="js/storage.js"></script>
 <script src="js/app.js"></script>
 
-<!-- SCRIPT COMPLEMENTAR PARA O FORMULÁRIO MANUAL DE FOTOS -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const cameraInput = document.getElementById('camera-input');
-    const galleryInput = document.getElementById('gallery-input');
-    const btnCamera = document.getElementById('btn-trigger-camera');
-    const btnGallery = document.getElementById('btn-trigger-gallery');
-    
-    const uploadPlaceholder = document.getElementById('upload-placeholder');
-    const previewContainer = document.getElementById('image-preview-container');
-    const previewImg = document.getElementById('dish-preview-img');
-    const manualPhotoFormCard = document.getElementById('manual-photo-form-card');
-    const photoMealForm = document.getElementById('photo-meal-form');
-    const recentPhotosGrid = document.getElementById('recent-photos-grid');
 
-    if (btnCamera && cameraInput) btnCamera.addEventListener('click', () => cameraInput.click());
-    if (btnGallery && galleryInput) btnGallery.addEventListener('click', () => galleryInput.click());
-
-    function handleFileSelected(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            previewImg.src = e.target.result;
-            uploadPlaceholder.style.display = 'none';
-            previewContainer.style.display = 'block';
-            
-            if (manualPhotoFormCard) manualPhotoFormCard.style.display = 'block';
-        };
-        reader.readAsDataURL(file);
-    }
-
-    if (cameraInput) cameraInput.addEventListener('change', handleFileSelected);
-    if (galleryInput) galleryInput.addEventListener('change', handleFileSelected);
-
-    if (photoMealForm) {
-        photoMealForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const mealType = document.getElementById('photo-meal-select').value;
-            const nomeAlimento = document.getElementById('photo-food-name').value;
-            const calorias = Number(document.getElementById('photo-food-cal').value);
-            const proteinas = Number(document.getElementById('photo-food-prot').value);
-            const carboidratos = Number(document.getElementById('photo-food-carb').value);
-            const gorduras = Number(document.getElementById('photo-food-fat').value);
-
-            if (typeof adicionarAlimentoAoDiario === 'function') {
-                adicionarAlimentoAoDiario(mealType, {
-                    nome: nomeAlimento,
-                    calorias: calorias,
-                    proteina: proteinas,
-                    carboidrato: carboidratos,
-                    gordura: gorduras
-                });
-            } else {
-                alert(`Sucesso! "${nomeAlimento}" (${calorias} kcal) adicionado ao diário em [${mealType.toUpperCase()}].`);
-            }
-
-            salvarFotoRecente(previewImg.src, nomeAlimento);
-            resetarTelaFoto();
-        });
-    }
-
-    function salvarFotoRecente(src, titulo) {
-        if (!recentPhotosGrid) return;
-        const emptyMsg = recentPhotosGrid.querySelector('.empty-photos-msg');
-        if (emptyMsg) emptyMsg.remove();
-
-        const card = document.createElement('div');
-        card.className = 'recent-photo-item';
-        card.innerHTML = `
-            <img src="${src}" alt="${titulo}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
-            <p style="font-size: 11px; margin-top: 4px; text-align: center; color: var(--text-dark);">${titulo}</p>
-        `;
-        recentPhotosGrid.prepend(card);
-    }
-
-    function resetarTelaFoto() {
-        if (uploadPlaceholder) uploadPlaceholder.style.display = 'flex';
-        if (previewContainer) previewContainer.style.display = 'none';
-        if (manualPhotoFormCard) manualPhotoFormCard.style.display = 'none';
-        if (photoMealForm) photoMealForm.reset();
-        if (cameraInput) cameraInput.value = '';
-        if (galleryInput) galleryInput.value = '';
-    }
-});
-</script>
-
-<!-- SCRIPT DE GERAÇÃO DO PDF -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const btnGerarPdf = document.getElementById('btn-gerar-pdf');
-    if (btnGerarPdf) {
-        btnGerarPdf.addEventListener('click', () => {
-            // Torna todas as seções visíveis temporariamente para o print recolher todo o conteúdo no PDF
-            const secoes = document.querySelectorAll('.view-section');
-            secoes.forEach(sec => sec.style.display = 'block');
-
-            // Aciona a ferramenta nativa de impressão/salvar como PDF do navegador
-            window.print();
-
-            // Restaura o comportamento normal de abas da aplicação após o fechamento da janela de impressão
-            setTimeout(() => {
-                secoes.forEach(sec => {
-                    if (!sec.classList.contains('active')) {
-                        sec.style.display = 'none';
-                    }
-                });
-            }, 500);
-        });
-    }
-});
 </script>
 </body>
 </html>
