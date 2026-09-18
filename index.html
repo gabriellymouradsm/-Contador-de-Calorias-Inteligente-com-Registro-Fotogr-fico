@@ -5,6 +5,7 @@
   <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
   <title>SparkKcal - Aplicativo Completo</title>
   <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#a04100">
 
   <!-- Google Fonts: Plus Jakarta Sans -->
   <link href="https://fonts.googleapis.com" rel="preconnect"/>
@@ -124,7 +125,7 @@
     </div>
     <div class="flex items-center gap-1.5 bg-primary-fixed/60 px-3 py-1 rounded-full cursor-pointer" onclick="switchView('onboarding')">
       <span class="material-symbols-outlined text-primary text-[18px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
-      <span id="header-streak" class="text-xs font-bold text-primary"></span>
+      <span id="header-streak" class="text-xs font-bold text-primary">5 dias</span>
     </div>
   </header>
 
@@ -313,7 +314,6 @@
     <section id="view-hoje" class="view-section space-y-4">
       <div class="flex justify-between items-end">
         <div>
-          
           <h1 id="greeting-name" class="text-xl text-on-surface font-extrabold tracking-tight mt-0.5">Olá, Atleta! 👋</h1>
         </div>
         <div class="bg-surface-container-lowest px-3 py-1 rounded-full border border-surface-container flex items-center gap-1.5 shadow-sm">
@@ -553,7 +553,7 @@
             <span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">local_fire_department</span>
           </div>
           <div>
-            <span class="text-[10px] font-bold text-primary tracking-wider block"></span>
+            <span class="text-[10px] font-bold text-primary tracking-wider block">NÍVEL 4 🔥</span>
             <h1 class="text-lg font-extrabold text-on-surface leading-none">Meu Perfil</h1>
           </div>
         </div>
@@ -573,7 +573,7 @@
               <span class="material-symbols-outlined text-primary-container text-[16px]" style="font-variation-settings: 'FILL' 1;">verified</span>
             </div>
             <div class="inline-flex items-center gap-1 px-2.5 py-0.5 mt-1 bg-surface-container rounded-full text-on-tertiary-container text-[10px] font-bold">
-              <span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> 
+              <span class="material-symbols-outlined text-[12px] text-primary" style="font-variation-settings: 'FILL' 1;">local_fire_department</span> Atleta Spark (PWA Local)
             </div>
           </div>
         </div>
@@ -707,6 +707,7 @@
 
 </div>
 
+<!-- SCRIPTS PRINCIPAIS E LÓGICA DO APP -->
 <script>
   let dailyTargetKcal = 2149;
   let dailyWaterMl = 2600;
@@ -1128,30 +1129,23 @@
     updateDashboardCalculations();
     renderMeasurementHistory();
   });
-  
-  
+</script>
+
 <!-- CHART.JS VIA CDN -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" onerror="window.chartJsFailed=true;"></script>
 
 <!-- REGISTRO DO SERVICE WORKER (PWA) -->
 <script>
-if ('serviceWorker' in navigator) {
-window.addEventListener('load', () => {
-navigator.serviceWorker.register('./sw.js').then((reg) => {
-console.log('SparkKcal Service Worker registrado com sucesso:', reg.scope);
-}).catch((err) => {
-console.log('Falha ao registrar Service Worker:', err);
-});
-});
-}
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js').then((reg) => {
+        console.log('SparkKcal Service Worker registrado com sucesso:', reg.scope);
+      }).catch((err) => {
+        console.log('Falha ao registrar Service Worker:', err);
+      });
+    });
+  }
 </script>
 
-<!-- SCRIPTS DA APLICAÇÃO -->
-<script src="js/alimentos.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/app.js"></script>
-
-
-</script>
 </body>
 </html>
